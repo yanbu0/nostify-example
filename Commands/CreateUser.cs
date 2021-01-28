@@ -30,7 +30,7 @@ namespace nostify_example
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] User user, HttpRequest httpRequest,
             ILogger log)
         {
-            PersistedEvent pe = new PersistedEvent(UserCommand.CreateUser, $"{UserCommand.CreateUser.AggregateType}||{user.id.ToString()}", user);
+            PersistedEvent pe = new PersistedEvent(AggregateCommand.Create, $"{User.aggregateType}||{user.id.ToString()}", user);
             await _nostify.PersistAsync(pe);
 
             return new OkObjectResult(new{ message = user.userName + " was created"});

@@ -34,7 +34,7 @@ namespace nostify_example
                     userName = "yanbu0_" + i.ToString()
                 };
 
-                PersistedEvent pe = new PersistedEvent(UserCommand.UpdateUser, $"{UserCommand.UpdateUser.AggregateType}||{1.ToString()}", update);
+                PersistedEvent pe = new PersistedEvent(AggregateCommand.Update, $"{User.aggregateType}||{1.ToString()}", update);
                 await _nostify.PersistAsync(pe);
             }
 

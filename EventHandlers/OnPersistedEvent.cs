@@ -38,7 +38,7 @@ namespace nostify_example
                 Container currentStateContainer = await db.CreateContainerIfNotExistsAsync("currentState","/partitionKey");
 
                 User user = await _nostify.BuildProjectionAsync<User>(pe.partitionKey);
-                await currentStateContainer.UpsertItemAsync<User>(user, new Microsoft.Azure.Cosmos.PartitionKey(pe.partitionKey));
+                await currentStateContainer.UpsertItemAsync<User>(user, pe.partitionKey.ToPartitionKey());
             }
         }
     }
