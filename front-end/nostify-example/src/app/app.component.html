@@ -1,5 +1,14 @@
 
 {{title}}<br/><br/>
-User Name: <input type="text" name="username" [(ngModel)]="username"/><br/>
-<button (click)="createUserClick()">Create User</button>
+Customer Name: <input type="text" name="customerName" [(ngModel)]="customerName"/><br/>
+Account ID: <input type="text" name="accountId" [(ngModel)]="accountId"/><br/>
+<button (click)="createAccountClick()">Create Account</button>
 {{ createMessage }}
+<br/>
+<br/>
+Aggregate ID: <input type="text" name="aggregateId" [(ngModel)]="aggregateId"/><br/>
+<button (click)="generateTransactions()">Generate Transactions</button>
+Transactions:<br/>
+<div *ngFor="let t of transactions | async">
+    Transaction Amount:&nbsp;{{ t.amount | currency }}
+    </div>

@@ -9,31 +9,32 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Http;
 using nostify;
-using System.Linq;
-using Microsoft.Azure.Cosmos.Linq;
 
 namespace nostify_example
 {
-    public class CreateUser
+    public class GetAccount
     {
 
         private readonly HttpClient _client;
         private readonly Nostify _nostify;
-        public CreateUser(HttpClient httpClient, Nostify nostify)
+        public GetAccount(HttpClient httpClient, Nostify nostify)
         {
             this._client = httpClient;
             this._nostify = nostify;
         }
 
-        [FunctionName("CreateUser")]
+        [FunctionName("GetAccount")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] User user, HttpRequest httpRequest,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
-            PersistedEvent pe = new PersistedEvent(AggregateCommand.Create, $"{User.aggregateType}||{user.id.ToString()}", user);
-            await _nostify.PersistAsync(pe);
 
-            return new OkObjectResult(new{ message = user.userName + " was created"});
+            string accountId = req.Query["id"];
+
+            BankAccount currentState = await _nostify.RehydrateAggregateAsync<BankAccount>(Guid.Parse(accountId));
+
+
+            return new OkObjectResult(JsonConvert.SerializeObject(currentState));
         }
     }
 }
