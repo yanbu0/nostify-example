@@ -9,11 +9,11 @@ using Newtonsoft.Json.Linq;
 namespace nostify_example
 {
 
-    public class BankAccountCommand : AggregateCommand
+    public class BankAccountCommand : NostifyCommand
     {
 
 
-        public static readonly BankAccountCommand AddTransaction = new BankAccountCommand("Add Transaction");
+        public static readonly BankAccountCommand ProcessTransaction = new BankAccountCommand("Process Transaction");
 
         public static readonly BankAccountCommand UpdateManager = new BankAccountCommand("Update Manager");
 
@@ -40,19 +40,16 @@ namespace nostify_example
 
         public override void Apply(PersistedEvent pe)
         {
-            if (pe.command == AggregateCommand.Create || pe.command == AggregateCommand.Update)
-            {
-                this.UpdateProperties<BankAccount>(pe.payload);
-            }
-            else if (pe.command == BankAccountCommand.AddTransaction)
-            {
+            var applyFunctions = new Dictionary<NostifyCommand, Action>();
+            applyFunctions[NostifyCommand.Create] = () => { this.UpdateProperties<BankAccount>(pe.payload); };
+            applyFunctions[NostifyCommand.Update] = applyFunctions[NostifyCommand.Create];
+            applyFunctions[BankAccountCommand.ProcessTransaction] = () => { 
                 Transaction transaction = ((JObject)pe.payload).ToObject<Transaction>();
-                this.transactions.Add(transaction);
-            }
-            else if (pe.command == AggregateCommand.Delete)
-            {
-                this.isDeleted = true;
-            }
+                 this.transactions.Add(transaction);
+            };
+            applyFunctions[NostifyCommand.Delete] = () => { this.isDeleted = true; };
+
+            applyFunctions[pe.command].Invoke();
         }
     }
 

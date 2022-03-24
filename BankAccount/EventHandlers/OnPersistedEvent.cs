@@ -48,7 +48,7 @@ namespace nostify_example
                         BankAccount account = await _nostify.RehydrateAggregateAsync<BankAccount>(pe.id);
                         await currentStateContainer.UpsertItemAsync<BankAccount>(account);
 
-                        if (pe.command == BankAccountCommand.AddTransaction)
+                        if (pe.command == BankAccountCommand.ProcessTransaction)
                         {
                             await signalRMessages.AddAsync(
                                 new SignalRMessage

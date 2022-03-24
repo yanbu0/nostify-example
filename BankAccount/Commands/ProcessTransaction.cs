@@ -35,7 +35,7 @@ namespace nostify_example
                 amount = amt
             };
 
-            AggregateCommand command = BankAccountCommand.AddTransaction;
+            NostifyCommand command = BankAccountCommand.ProcessTransaction;
 
             PersistedEvent pe = new PersistedEvent(command, $"{BankAccount.aggregateType}||{accountId.ToString()}", trans);
             await _nostify.PersistAsync(pe);

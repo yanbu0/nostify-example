@@ -32,7 +32,10 @@ namespace nostify_example
         {
             var peContainer = await _nostify.GetPersistedEventsContainerAsync();
 
-            PersistedEvent pe = new PersistedEvent(BankAccountCommand.UpdateManager, account, new { newManagerId = account.accountManagerId });
+            PersistedEvent pe = new PersistedEvent(BankAccountCommand.UpdateManager, account, new { 
+                newManagerId = account.accountManagerId 
+            });
+            
             await _nostify.PersistAsync(pe);
 
             return new OkObjectResult(new{ message = $"Manager for account {account.accountId.ToString()} was updated"});

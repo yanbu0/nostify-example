@@ -44,7 +44,7 @@ namespace AccountManager_Service
                         pe = JsonConvert.DeserializeObject<PersistedEvent>(doc.ToString());
                         Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync();
 
-                        AccountManager account = await _nostify.BuildProjectionAsync<AccountManager>(pe.partitionKey);
+                        AccountManager account = await _nostify.RehydrateAggregateAsync<AccountManager>(pe.id);
                         await currentStateContainer.UpsertItemAsync<AccountManager>(account);
 
                     }

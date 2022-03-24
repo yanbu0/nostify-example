@@ -9,7 +9,10 @@ using System.Net.Http;
 using nostify;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace nostify_example
 {
@@ -44,11 +47,19 @@ namespace nostify_example
                     try
                     {
                         pe = JsonConvert.DeserializeObject<PersistedEvent>(doc.ToString());
-                        
-                        //Container bwmContainer = await _nostify.GetProjectionContainerAsync(pe.);
+                        Container bawmContainer = await _nostify.GetProjectionContainerAsync(BankAccountDetails.containerName);
 
-                        
+                        JObject payload = (JObject)pe.payload;
 
+                        List<BankAccountDetails> bawmToUpdate = (await bawmContainer.GetItemLinqQueryable<BankAccountDetails>()
+                            .Where(b => b.accountManagerId == payload["id"].Value<Guid>())
+                            .ReadAllAsync())
+                            .ToList();
+
+                        bawmToUpdate.ForEach(async b => {
+                            //b.accountManagerName
+                            await bawmContainer.UpsertItemAsync<BankAccountDetails>(b);
+                        });
                     }
                     catch (Exception e)
                     {

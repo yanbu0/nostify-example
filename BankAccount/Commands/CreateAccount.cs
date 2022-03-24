@@ -34,7 +34,7 @@ namespace nostify_example
             // peContainer.GetItemLinqQueryable<BankAccount>()
                 
 
-            PersistedEvent pe = new PersistedEvent(AggregateCommand.Create, $"{BankAccount.aggregateType}||{account.id.ToString()}", account);
+            PersistedEvent pe = new PersistedEvent(NostifyCommand.Create, $"{BankAccount.aggregateType}||{account.id.ToString()}", account);
             await _nostify.PersistAsync(pe);
 
             return new OkObjectResult(new{ message = $"Account for {account.customerName} was created"});
