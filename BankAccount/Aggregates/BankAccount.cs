@@ -15,7 +15,7 @@ namespace nostify_example
 
         public static readonly BankAccountCommand ProcessTransaction = new BankAccountCommand("Process Transaction");
 
-        public static readonly BankAccountCommand UpdateManager = new BankAccountCommand("Update Manager");
+        public static readonly BankAccountCommand UpdateManagerName = new BankAccountCommand("Update Manager Name");
 
 
         public BankAccountCommand(string name)
@@ -27,6 +27,8 @@ namespace nostify_example
 
     public class BankAccount : Aggregate
     {
+        new public static string aggregateType => "BankAccount";
+        
         public BankAccount()
         {
             this.transactions = new List<Transaction>();
@@ -36,20 +38,22 @@ namespace nostify_example
         public Guid accountManagerId { get; set; }
         public string customerName { get; set; }
         public List<Transaction> transactions { get; set; }
-        new public static string aggregateType => "BankAccount";
 
         public override void Apply(PersistedEvent pe)
         {
-            var applyFunctions = new Dictionary<NostifyCommand, Action>();
-            applyFunctions[NostifyCommand.Create] = () => { this.UpdateProperties<BankAccount>(pe.payload); };
-            applyFunctions[NostifyCommand.Update] = applyFunctions[NostifyCommand.Create];
-            applyFunctions[BankAccountCommand.ProcessTransaction] = () => { 
+            if (pe.command == NostifyCommand.Create || pe.command == NostifyCommand.Update)
+            {
+                this.UpdateProperties<BankAccount>(pe.payload);
+            }
+            else if (pe.command == BankAccountCommand.ProcessTransaction)
+            {
                 Transaction transaction = ((JObject)pe.payload).ToObject<Transaction>();
                  this.transactions.Add(transaction);
-            };
-            applyFunctions[NostifyCommand.Delete] = () => { this.isDeleted = true; };
-
-            applyFunctions[pe.command].Invoke();
+            }
+            else if (pe.command == NostifyCommand.Delete)
+            {
+                this.isDeleted = true;
+            }
         }
     }
 

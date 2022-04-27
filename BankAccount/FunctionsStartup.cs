@@ -17,6 +17,9 @@ namespace nostify_example
                 string dbName = "BankAccount_DB";
                 string endPoint = "https://localhost:8081";
                 var nostify = new Nostify(apiKey,dbName,endPoint);
+                
+                var _ = nostify.GetPersistedEventsContainerAsync().GetAwaiter().GetResult();
+
                 return nostify;
             });
         }

@@ -25,107 +25,107 @@
     </Content>
   </ItemGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\ThirdPartyNotice.txt" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\ThirdPartyNotice.txt')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\ThirdPartyNotice.txt" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\ThirdPartyNotice.txt')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>ThirdPartyNotice.txt</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.template.config\template.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.template.config\template.json')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.template.config\template.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.template.config\template.json')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\.template.config\template.json</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.vscode\extensions.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.vscode\extensions.json')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.vscode\extensions.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.vscode\extensions.json')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\.vscode\extensions.json</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.vscode\launch.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.vscode\launch.json')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.vscode\launch.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.vscode\launch.json')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\.vscode\launch.json</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.vscode\settings.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.vscode\settings.json')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.vscode\settings.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.vscode\settings.json')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\.vscode\settings.json</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.vscode\tasks.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\.vscode\tasks.json')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.vscode\tasks.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\.vscode\tasks.json')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\.vscode\tasks.json</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\FunctionsStartup.cs" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\FunctionsStartup.cs')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\FunctionsStartup.cs" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\FunctionsStartup.cs')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\FunctionsStartup.cs</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\Aggregates\_ReplaceMe_Aggregate.cs" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\Aggregates\_ReplaceMe_Aggregate.cs')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\Aggregates\_ReplaceMe_Aggregate.cs" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\Aggregates\_ReplaceMe_Aggregate.cs')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\Nostify\Aggregates\_ReplaceMe_Aggregate.cs</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\Commands\Create_ReplaceMe_.cs" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\Commands\Create_ReplaceMe_.cs')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\Commands\Create_ReplaceMe_.cs" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\Commands\Create_ReplaceMe_.cs')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\Nostify\Commands\Create_ReplaceMe_.cs</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\EventHandlers\OnPersistedEvent.cs" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\EventHandlers\OnPersistedEvent.cs')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\EventHandlers\OnPersistedEvent.cs" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\EventHandlers\OnPersistedEvent.cs')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\Nostify\EventHandlers\OnPersistedEvent.cs</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\Projections\.placeholder" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\Projections\.placeholder')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\Projections\.placeholder" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\Projections\.placeholder')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\Nostify\Projections\.placeholder</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\Queries\.placeholder" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\Nostify\Queries\.placeholder')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\Queries\.placeholder" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\Nostify\Queries\.placeholder')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\Nostify\Queries\.placeholder</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\_ReplaceMe__Service.csproj" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\_ReplaceMe__Service.csproj')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\_ReplaceMe__Service.csproj" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\_ReplaceMe__Service.csproj')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\_ReplaceMe__Service.csproj</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\host.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\host.json')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\host.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\host.json')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\host.json</Link>
     </Content>
-    <Content Include="$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\local.settings.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.6.6\contentFiles\any\net5.0\template\local.settings.json')">
+    <Content Include="$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\local.settings.json" Condition="Exists('$(NuGetPackageRoot)nostify\1.7.0\contentFiles\any\net5.0\template\local.settings.json')">
       <NuGetPackageId>nostify</NuGetPackageId>
-      <NuGetPackageVersion>1.6.6</NuGetPackageVersion>
+      <NuGetPackageVersion>1.7.0</NuGetPackageVersion>
       <NuGetItemType>Content</NuGetItemType>
       <Private>False</Private>
       <Link>template\local.settings.json</Link>

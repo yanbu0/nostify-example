@@ -6,20 +6,21 @@ namespace nostify_example
 {
     public class BankAccountDetails : Projection
     {
-        new static string containerName => "BankAccountWithManager";
-
+        new public static string containerName => "BankAccountDetails";
+        
         public BankAccountDetails()
         {
         }
 
+
         public Guid id { get; set;}
-        public Guid accountManagerId { get; set; }
+        public Guid? accountManagerId { get; set; }
         public string accountManagerName { get; set; }
-        public decimal currentBalance { get; set; }
+        public decimal currentBalance { get; set; } = 0;
 
         public override void Apply(PersistedEvent pe)
         {
-            if (pe.command == NostifyCommand.Create || pe.command == NostifyCommand.Update)
+            if (pe.command == NostifyCommand.Create || pe.command == NostifyCommand.Update || pe.command == BankAccountCommand.UpdateManagerName)
             {
                 this.UpdateProperties<BankAccountDetails>(pe.payload);
             }

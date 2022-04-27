@@ -31,7 +31,7 @@ namespace nostify_example
 
             string accountId = req.Query["id"];
 
-            BankAccount currentState = await _nostify.RehydrateAggregateAsync<BankAccount>(Guid.Parse(accountId));
+            BankAccount currentState = await _nostify.RehydrateAsync<BankAccount>(Guid.Parse(accountId));
 
 
             return new OkObjectResult(JsonConvert.SerializeObject(currentState));

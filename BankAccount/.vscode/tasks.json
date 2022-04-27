@@ -59,9 +59,9 @@
             "type": "func",
             "dependsOn": "build",
             "options": {
-                "cwd": "${workspaceFolder}/bin/Debug/net5.0"
+                "cwd": "${workspaceFolder}/bin/Debug/net6.0"
             },
-            "command": "host start",
+            "command": "host start --csharp --verbose",
             "isBackground": true,
             "problemMatcher": "$func-dotnet-watch"
         }

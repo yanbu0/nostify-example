@@ -31,10 +31,10 @@ namespace nostify_example
             ILogger log)
         {
             var peContainer = await _nostify.GetPersistedEventsContainerAsync();
-            // peContainer.GetItemLinqQueryable<BankAccount>()
-                
+            Guid aggId = Guid.NewGuid();
+            account.id = aggId;
 
-            PersistedEvent pe = new PersistedEvent(NostifyCommand.Create, $"{BankAccount.aggregateType}||{account.id.ToString()}", account);
+            PersistedEvent pe = _nostify.CreateNewPersistedEvent(NostifyCommand.Create, account.id, account);
             await _nostify.PersistAsync(pe);
 
             return new OkObjectResult(new{ message = $"Account for {account.customerName} was created"});

@@ -1206,7 +1206,7 @@
           "lib/netstandard1.3/Newtonsoft.Json.Bson.dll": {}
         }
       },
-      "nostify/1.6.6": {
+      "nostify/1.7.0": {
         "type": "package",
         "dependencies": {
           "microsoft.azure.cosmos": "3.16.0"
@@ -4313,10 +4313,10 @@
         "newtonsoft.json.bson.nuspec"
       ]
     },
-    "nostify/1.6.6": {
-      "sha512": "UafM66sRbzBaYzo+4S86gfNzyvGfjuDe5i0HHiD/AvVpCYaxPn78L/YRM8WlMOkOS5TL0LrHnUVO6HD/oYAV5w==",
+    "nostify/1.7.0": {
+      "sha512": "Eajar0GGrUWOWpImlJeEv5lsphAFvV3Io2HIBFwMtvSWnXdoZwC7Q50iBbhVx1JU7hOiG+0kFqPi49qeIWqUaw==",
       "type": "package",
-      "path": "nostify/1.6.6",
+      "path": "nostify/1.7.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -4353,7 +4353,7 @@
         "contentFiles/any/net5.0/template/local.settings.json",
         "lib/net5.0/nostify.dll",
         "lib/net5.0/nostify.xml",
-        "nostify.1.6.6.nupkg.sha512",
+        "nostify.1.7.0.nupkg.sha512",
         "nostify.nuspec"
       ]
     },
@@ -8411,7 +8411,7 @@
       "Microsoft.Azure.WebJobs.Extensions.SignalRService >= 1.2.2",
       "Microsoft.Extensions.Http >= 3.1.11",
       "Microsoft.NET.Sdk.Functions >= 3.0.11",
-      "nostify >= 1.6.6"
+      "nostify >= 1.7.0"
     ]
   },
   "packageFolders": {
@@ -8485,7 +8485,7 @@
           },
           "nostify": {
             "target": "Package",
-            "version": "[1.6.6, )"
+            "version": "[1.7.0, )"
           }
         },
         "imports": [

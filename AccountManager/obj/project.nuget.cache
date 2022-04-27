@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Ho8orgFq59PXet2x1lxMw61lIR1jTwfOcAyYgT/ok7gRUAg1YjRfxMLqRkhk6GYk22o7e6uS5cfIpMigx0tN3g==",
+  "dgSpecHash": "i1t2vllkXJ07Re9shTZR2UpiSxMyjp935bHDKCsXCCuxx8GVu7hOrCu09qO7745nBewRS9HqmqQ0pYaP4MRemQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\trboyle\\source\\nostify-example\\AccountManager\\AccountManager_Service.csproj",
   "expectedPackageFiles": [
@@ -89,7 +89,7 @@
     "C:\\Users\\trboyle\\.nuget\\packages\\netstandard.library\\2.0.1\\netstandard.library.2.0.1.nupkg.sha512",
     "C:\\Users\\trboyle\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",
     "C:\\Users\\trboyle\\.nuget\\packages\\newtonsoft.json.bson\\1.0.1\\newtonsoft.json.bson.1.0.1.nupkg.sha512",
-    "C:\\Users\\trboyle\\.nuget\\packages\\nostify\\1.6.6\\nostify.1.6.6.nupkg.sha512",
+    "C:\\Users\\trboyle\\.nuget\\packages\\nostify\\1.7.0\\nostify.1.7.0.nupkg.sha512",
     "C:\\Users\\trboyle\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\trboyle\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\trboyle\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",

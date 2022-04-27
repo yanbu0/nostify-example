@@ -32,7 +32,7 @@ namespace AccountManager_Service
         {
             var peContainer = await _nostify.GetPersistedEventsContainerAsync();
 
-            PersistedEvent pe = new PersistedEvent(AggregateCommand.Create, $"{AccountManager.aggregateType}||{aggregate.id.ToString()}", aggregate);
+            PersistedEvent pe = new PersistedEvent(AccountManagerCommand.Create, $"{AccountManager.aggregateType}||{aggregate.id.ToString()}", aggregate);
             await _nostify.PersistAsync(pe);
 
             return new OkObjectResult(new{ message = $"Aggregate {aggregate.id} was created"});

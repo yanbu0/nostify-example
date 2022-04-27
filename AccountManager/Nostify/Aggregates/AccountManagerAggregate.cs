@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace AccountManager_Service
 {
 
-    public class AccountManagerCommand : AggregateCommand
+    public class AccountManagerCommand : NostifyCommand
     {
 
 
@@ -32,11 +32,11 @@ namespace AccountManager_Service
 
         public override void Apply(PersistedEvent pe)
         {
-            if (pe.command == AggregateCommand.Create || pe.command == AggregateCommand.Update)
+            if (pe.command == NostifyCommand.Create || pe.command == NostifyCommand.Update)
             {
                 this.UpdateProperties<AccountManager>(pe.payload);
             }
-            else if (pe.command == AggregateCommand.Delete)
+            else if (pe.command == NostifyCommand.Delete)
             {
                 this.isDeleted = true;
             }

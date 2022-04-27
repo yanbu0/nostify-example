@@ -31,7 +31,7 @@ namespace nostify_example
 
         [FunctionName(_functionName)]
         public async Task Run([CosmosDBTrigger(
-            databaseName: "AccountManager_DB",
+            databaseName: "BankAccount_DB",
             collectionName: "persistedEvents",
             ConnectionStringSetting = "CosmosConnectionString",
             CreateLeaseCollectionIfNotExists = true,
@@ -47,19 +47,28 @@ namespace nostify_example
                     try
                     {
                         pe = JsonConvert.DeserializeObject<PersistedEvent>(doc.ToString());
-                        Container bawmContainer = await _nostify.GetProjectionContainerAsync(BankAccountDetails.containerName);
 
-                        JObject payload = (JObject)pe.payload;
+                        //We only run this code for BankAccountCommand.UpdateManagerName
+                        if (pe.command == BankAccountCommand.UpdateManagerName)
+                        {
+                            string test = BankAccountDetails.containerName;
+                            string containerName = "BankAccountDetails";
+                            Container baDetailsContainer = await _nostify.GetProjectionContainerAsync(containerName);
 
-                        List<BankAccountDetails> bawmToUpdate = (await bawmContainer.GetItemLinqQueryable<BankAccountDetails>()
-                            .Where(b => b.accountManagerId == payload["id"].Value<Guid>())
-                            .ReadAllAsync())
-                            .ToList();
+                            JObject payload = (JObject)pe.payload;
 
-                        bawmToUpdate.ForEach(async b => {
-                            //b.accountManagerName
-                            await bawmContainer.UpsertItemAsync<BankAccountDetails>(b);
-                        });
+                            //Get List of detail records to update
+                            List<BankAccountDetails> baDetailsToUpdate = await baDetailsContainer.GetItemLinqQueryable<BankAccountDetails>()
+                                .Where(b => b.accountManagerId == payload["accountManagerId"].Value<Guid>())
+                                .ReadAllAsync();
+
+                            //Update the name
+                            baDetailsToUpdate.ForEach(async b => {
+                                b.Apply(pe);
+                                await baDetailsContainer.UpsertItemAsync<BankAccountDetails>(b);
+                            });
+                        }
+                        
                     }
                     catch (Exception e)
                     {
