@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
 using nostify;
+using nostify_example_contracts;
 
 namespace nostify_example
 {
@@ -27,14 +28,14 @@ namespace nostify_example
 
         [FunctionName("UpdateManagerName")]
         public async Task Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] ManagerNameUpdateContract contract, 
+            HttpRequest req,
             ILogger log)
         {
-            Guid managerId = Guid.Parse(req.Query["id"]);
-            string newManagerName = req.Query["name"].ToString();
+            //With nostify you only have to include the properties you want to update
             var updatedManager = new {
-                accountManagerId = managerId,
-                accountManagerName = newManagerName
+                accountManagerId = contract.id,
+                accountManagerName = contract.name
             };
 
             //Query currentState container to get the aggregate root id of all accounts with this manager
@@ -46,9 +47,9 @@ namespace nostify_example
                 .Select(a => a.id)
                 .ToList();
 
-
+            //Create PersistedEvent for each aggregate
             accountIdsWithManager.ForEach(async guid => {
-                PersistedEvent pe = _nostify.CreateNewPersistedEvent(BankAccountCommand.UpdateManagerName, guid, updatedManager);
+                PersistedEvent pe = new PersistedEvent(BankAccountCommand.UpdateManagerName, guid, updatedManager);
                 await _nostify.PersistAsync(pe);
             });
         }

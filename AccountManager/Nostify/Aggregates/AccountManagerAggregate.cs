@@ -12,6 +12,8 @@ namespace AccountManager_Service
     public class AccountManagerCommand : NostifyCommand
     {
 
+        public static readonly AccountManagerCommand UpdateName = new AccountManagerCommand("Update Name");
+
 
         public AccountManagerCommand(string name)
         : base(name)
@@ -22,17 +24,18 @@ namespace AccountManager_Service
 
     public class AccountManager : Aggregate
     {
+        new public string aggregateType = "AccountManager";
+
         public AccountManager()
         {
         }
 
         public string name { get; set; }
 
-        new public static string aggregateType => "AccountManager";
 
         public override void Apply(PersistedEvent pe)
         {
-            if (pe.command == NostifyCommand.Create || pe.command == NostifyCommand.Update)
+            if (pe.command == NostifyCommand.Create || pe.command == NostifyCommand.Update || pe.command == AccountManagerCommand.UpdateName)
             {
                 this.UpdateProperties<AccountManager>(pe.payload);
             }

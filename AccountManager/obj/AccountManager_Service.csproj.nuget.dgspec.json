@@ -17,15 +17,19 @@
           "C:\\Users\\trboyle\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net5.0"
+          "net6.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net5.0": {
-            "targetAlias": "net5.0",
-            "projectReferences": {}
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\trboyle\\source\\nostify-example\\nostify_example_contracts\\nostify_example_contracts.csproj": {
+                "projectPath": "C:\\Users\\trboyle\\source\\nostify-example\\nostify_example_contracts\\nostify_example_contracts.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -35,20 +39,16 @@
         }
       },
       "frameworks": {
-        "net5.0": {
-          "targetAlias": "net5.0",
+        "net6.0": {
+          "targetAlias": "net6.0",
           "dependencies": {
             "Microsoft.Azure.Cosmos": {
               "target": "Package",
-              "version": "[3.16.0, )"
+              "version": "[3.26.1, )"
             },
             "Microsoft.Azure.Functions.Extensions": {
               "target": "Package",
               "version": "[1.1.0, )"
-            },
-            "Microsoft.Azure.SignalR.Serverless.Protocols": {
-              "target": "Package",
-              "version": "[1.2.2, )"
             },
             "Microsoft.Azure.WebJobs.Extensions": {
               "target": "Package",
@@ -56,23 +56,27 @@
             },
             "Microsoft.Azure.WebJobs.Extensions.CosmosDB": {
               "target": "Package",
-              "version": "[3.0.5, )"
+              "version": "[3.0.10, )"
+            },
+            "Microsoft.Azure.WebJobs.Extensions.Http": {
+              "target": "Package",
+              "version": "[3.0.12, )"
             },
             "Microsoft.Azure.WebJobs.Extensions.SignalRService": {
               "target": "Package",
-              "version": "[1.2.2, )"
+              "version": "[1.8.0, )"
             },
             "Microsoft.Extensions.Http": {
               "target": "Package",
-              "version": "[3.1.11, )"
+              "version": "[6.0.0, )"
             },
             "Microsoft.NET.Sdk.Functions": {
               "target": "Package",
-              "version": "[3.0.11, )"
+              "version": "[4.1.0, )"
             },
             "nostify": {
               "target": "Package",
-              "version": "[1.7.0, )"
+              "version": "[1.7.8, )"
             }
           },
           "imports": [
@@ -90,7 +94,59 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\trboyle\\source\\nostify-example\\nostify_example_contracts\\nostify_example_contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\trboyle\\source\\nostify-example\\nostify_example_contracts\\nostify_example_contracts.csproj",
+        "projectName": "nostify_example_contracts",
+        "projectPath": "C:\\Users\\trboyle\\source\\nostify-example\\nostify_example_contracts\\nostify_example_contracts.csproj",
+        "packagesPath": "C:\\Users\\trboyle\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\trboyle\\source\\nostify-example\\nostify_example_contracts\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\trboyle\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -17,6 +17,7 @@ namespace nostify_example
         public Guid? accountManagerId { get; set; }
         public string accountManagerName { get; set; }
         public decimal currentBalance { get; set; } = 0;
+        public int tenantId { get; set; }
 
         public override void Apply(PersistedEvent pe)
         {

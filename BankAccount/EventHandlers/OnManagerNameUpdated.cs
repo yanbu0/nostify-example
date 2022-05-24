@@ -51,15 +51,14 @@ namespace nostify_example
                         //We only run this code for BankAccountCommand.UpdateManagerName
                         if (pe.command == BankAccountCommand.UpdateManagerName)
                         {
-                            string test = BankAccountDetails.containerName;
-                            string containerName = "BankAccountDetails";
-                            Container baDetailsContainer = await _nostify.GetProjectionContainerAsync(containerName);
+                            Container baDetailsContainer = await _nostify.GetProjectionContainerAsync(BankAccountDetails.containerName);
 
-                            JObject payload = (JObject)pe.payload;
+                            string mgrid = ((dynamic)pe.payload).accountManagerId;
+                            Guid accountManagerId = Guid.Parse(mgrid);
 
                             //Get List of detail records to update
                             List<BankAccountDetails> baDetailsToUpdate = await baDetailsContainer.GetItemLinqQueryable<BankAccountDetails>()
-                                .Where(b => b.accountManagerId == payload["accountManagerId"].Value<Guid>())
+                                .Where(b => b.accountManagerId == accountManagerId)
                                 .ReadAllAsync();
 
                             //Update the name

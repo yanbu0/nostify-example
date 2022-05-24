@@ -27,7 +27,7 @@ namespace nostify_example
 
     public class BankAccount : Aggregate
     {
-        new public static string aggregateType => "BankAccount";
+        new public string aggregateType = "BankAccount";
         
         public BankAccount()
         {
@@ -48,7 +48,7 @@ namespace nostify_example
             else if (pe.command == BankAccountCommand.ProcessTransaction)
             {
                 Transaction transaction = ((JObject)pe.payload).ToObject<Transaction>();
-                 this.transactions.Add(transaction);
+                this.transactions.Add(transaction);
             }
             else if (pe.command == NostifyCommand.Delete)
             {

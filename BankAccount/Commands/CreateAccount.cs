@@ -34,10 +34,10 @@ namespace nostify_example
             Guid aggId = Guid.NewGuid();
             account.id = aggId;
 
-            PersistedEvent pe = _nostify.CreateNewPersistedEvent(NostifyCommand.Create, account.id, account);
+            PersistedEvent pe = new PersistedEvent(NostifyCommand.Create, account.id, account);
             await _nostify.PersistAsync(pe);
 
-            return new OkObjectResult(new{ message = $"Account for {account.customerName} was created"});
+            return new OkObjectResult(new{ message = $"Account {account.id} for {account.customerName} was created"});
         }
     }
 }

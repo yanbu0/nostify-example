@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
@@ -10,9 +9,6 @@ using nostify;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 
 namespace nostify_example
 {
@@ -45,28 +41,44 @@ namespace nostify_example
                     try
                     {
                         pe = JsonConvert.DeserializeObject<PersistedEvent>(doc.ToString());
-                        JObject payload = (JObject)pe.payload;
-                        Guid bankAccountId = payload.GetValue<Guid>("id");
-                        
-                        //Update aggregate current state
-                        Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync();
-                        BankAccount account = (await currentStateContainer
-                            .GetItemLinqQueryable<BankAccount>()
-                            .Where(ba => ba.id == bankAccountId)
-                            .ReadAllAsync<BankAccount>())
-                            .FirstOrDefault() ?? new BankAccount();
-                        account.Apply(pe);
-                        await currentStateContainer.UpsertItemAsync<BankAccount>(account);
 
-                        //Update BankAccountDetails projection
-                        Container baDetailsContainer = await _nostify.GetProjectionContainerAsync(BankAccountDetails.containerName); 
-                        BankAccountDetails deets = (await baDetailsContainer.GetItemLinqQueryable<BankAccountDetails>()
-                            .Where(b => b.id == bankAccountId)
-                            .ReadAllAsync())
-                            .FirstOrDefault() ?? new BankAccountDetails();
-                        deets.Apply(pe);
-                        await baDetailsContainer.UpsertItemAsync<BankAccountDetails>(deets);
+                        if (pe.command == NostifyCommand.Create ||
+                            pe.command == NostifyCommand.Update ||
+                            pe.command == NostifyCommand.Delete ||
+                            pe.command == BankAccountCommand.ProcessTransaction)
+                        {
+                             Guid bankAccountId = Guid.Parse(pe.partitionKey);
                         
+                            //Update aggregate current state projection
+                            Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync();
+                            BankAccount account = (await currentStateContainer
+                                .GetItemLinqQueryable<BankAccount>()
+                                .Where(ba => ba.id == bankAccountId)
+                                .ReadAllAsync<BankAccount>())
+                                .FirstOrDefault() ?? new BankAccount();
+                            account.Apply(pe);
+                            await currentStateContainer.UpsertItemAsync<BankAccount>(account);
+
+                            //Update BankAccountDetails projection
+                            Container baDetailsContainer = await _nostify.GetProjectionContainerAsync(BankAccountDetails.containerName); 
+                            BankAccountDetails deets = (await baDetailsContainer.GetItemLinqQueryable<BankAccountDetails>()
+                                .Where(b => b.id == bankAccountId)
+                                .ReadAllAsync())
+                                .FirstOrDefault() ?? new BankAccountDetails();
+
+                            //Check if accountManagerId updated, then query the name
+                            dynamic payload = (dynamic)pe.payload;
+                            string acctMgrId = payload.accountManagerId;
+                            if (pe.command == NostifyCommand.Update && acctMgrId != null){
+                                var resp = await _client.GetAsync($"http://localhost:7072/api/GetAccountManager?id={acctMgrId}");
+                                dynamic accountManager = JsonConvert.DeserializeObject(await resp.Content.ReadAsStringAsync());
+                                string name = accountManager.name;
+                                payload.accountManagerName = name;
+                            }
+
+                            deets.Apply(pe);
+                            await baDetailsContainer.UpsertItemAsync<BankAccountDetails>(deets);
+                        }
 
                         //TODO: this needs to go into projection event handler
                         // if (pe.command == BankAccountCommand.ProcessTransaction)

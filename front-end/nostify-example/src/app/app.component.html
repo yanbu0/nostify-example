@@ -1,14 +1,61 @@
 
 {{title}}<br/><br/>
+Create New Customer Account - <br/>
 Customer Name: <input type="text" name="customerName" [(ngModel)]="customerName"/><br/>
 Account ID: <input type="text" name="accountId" [(ngModel)]="accountId"/><br/>
-<button (click)="createAccountClick()">Create Account</button>
+<button (click)="createAccountClick()" [disabled]="customerName == null || accountId == null">Create Account</button>
 {{ createMessage }}
 <br/>
 <br/>
-Aggregate ID: <input type="text" name="aggregateId" [(ngModel)]="aggregateId"/><br/>
-<button (click)="generateTransactions()">Generate Transactions</button>
-Transactions:<br/>
-<div *ngFor="let t of transactions | async">
-    Transaction Amount:&nbsp;{{ t.amount | currency }}
-    </div>
+Create New Manager - <br/>
+Account Manager Name: <input type="text" name="accountManagerName" [(ngModel)]="accountManagerName"/><br/>
+<button (click)="createManagerClick()" [disabled]="accountManagerName == null">Create Manager</button>
+{{ createManagerMessage }}
+<br/>
+<br/>
+Assign Manager To Account - <br/>
+<button (click)="getAccountManagersClick()" [disabled]="refreshMgrButtonDisabled">{{ refreshMgrButtonText }}</button><br/>
+Select Account Manager: <select [(ngModel)]="assManagerId" [disabled]="accountManagersArr.length == 0">
+    <option *ngFor="let m of accountManagersArr" [value]="m.id" [selected]="assManagerId == m.id">{{m.name}}</option>
+</select> {{ assManagerId }}<br/>
+
+<button (click)="getAccountsClick()" [disabled]="refreshAcctButtonDisabled">{{ refreshAcctButtonText }}</button><br/>
+Select Bank Account: <select [(ngModel)]="assAccountId" [disabled]="accountsArr.length == 0">
+    <option *ngFor="let a of accountsArr" [value]="a.id" [selected]="assAccountId == a.id">{{a.accountId + " - " + a.customerName}}</option>
+</select> {{ assAccountId }}<br/>
+<button (click)="assignManagerClick()" [disabled]="assAccountId == null || assManagerId == null">Assign Manager</button>
+{{ assignManagerMessage }}
+<br/>
+<br/>
+Account Manager Name Change - <br/>
+Old Manager Name:<button (click)="getAccountManagersClick()" [disabled]="refreshMgrButtonDisabled">{{ refreshMgrButtonText }}</button><br/>
+Select Account Manager: <select [(ngModel)]="managerId" [disabled]="accountManagersArr.length == 0">
+    <option *ngFor="let m of accountManagersArr" [value]="m.id" [selected]="assManagerId == m.id">{{m.name}}</option>
+</select> {{ assManagerId }}<br/>
+
+New Manager Name:<input type="text" name="newManagerName" [(ngModel)]="newManagerName"/><br/>
+<button (click)="updateManagerClick()" [disabled]="managerId == null">Update Manager</button>
+{{ updateManagerMessage }}
+<br/>
+<br/>
+Create A Bunch Of Random Transactions - <br/>
+<button (click)="getAccountsClick()" [disabled]="refreshAcctButtonDisabled">{{ refreshAcctButtonText }}</button><br/>
+Select Bank Account: <select [(ngModel)]="bankAccountAggregateId" [disabled]="accountsArr.length == 0">
+    <option *ngFor="let a of accountsArr" [value]="a.id" [selected]="bankAccountAggregateId == a.id">{{a.accountId + " - " + a.customerName}}</option>
+</select> <br/>
+<button (click)="generateTransactions()" [disabled]="bankAccountAggregateId == null">Generate Transactions</button><br/>
+<br/>
+<br/>
+
+BankAccountDetails:<br/>
+<button (click)="getAccountsClick()" [disabled]="refreshAcctButtonDisabled">{{ refreshAcctButtonText }}</button><br/>
+Select Bank Account: <select [(ngModel)]="baDetailsId" [disabled]="accountsArr.length == 0">
+    <option *ngFor="let a of accountsArr" [value]="a.id" [selected]="baDetailsId == a.id">{{a.accountId + " - " + a.customerName}}</option>
+</select> <br/>
+<button (click)="showRealTimeClick()" [disabled]="baDetailsId == null">Show Details Real Time</button><br/>
+<div>
+    {{ baDetails | async | json }}
+</div><br/>
+<br/>
+<button (click)="rebuildDetailsContainerClick()">Rebuild Details Container</button><br/>
+{{ rebuildMessage }}

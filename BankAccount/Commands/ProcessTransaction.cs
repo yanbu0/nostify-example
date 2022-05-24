@@ -37,7 +37,7 @@ namespace nostify_example
 
             NostifyCommand command = BankAccountCommand.ProcessTransaction;
 
-            PersistedEvent pe = new PersistedEvent(command, $"{BankAccount.aggregateType}||{accountId.ToString()}", trans);
+            PersistedEvent pe = new PersistedEvent(command, accountId, trans);
             await _nostify.PersistAsync(pe);
         }
     }
