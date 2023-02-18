@@ -14,7 +14,7 @@ using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class OnManagerNameUpdated
     {

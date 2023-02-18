@@ -6,7 +6,7 @@ using nostify;
 using Newtonsoft.Json.Linq;
 
 
-namespace nostify_example
+namespace BankAccount_Service
 {
 
     public class BankAccountCommand : NostifyCommand

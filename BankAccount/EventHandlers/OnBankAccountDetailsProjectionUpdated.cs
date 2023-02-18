@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class OnBankAccountDetailsProjectionUpdated
     {

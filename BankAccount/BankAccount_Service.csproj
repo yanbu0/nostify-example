@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
-    <RootNamespace>nostify_example</RootNamespace>
+    <RootNamespace>BankAccount_Service</RootNamespace>
     <DefaultItemExcludes>$(DefaultItemExcludes);front-end\**</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SignalRService" Version="1.8.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.0" />
-    <PackageReference Include="nostify" Version="1.7.11" />
+    <PackageReference Include="nostify" Version="1.8.0" />
     <ProjectReference Include="..\nostify_example_contracts\nostify_example_contracts.csproj" />
   </ItemGroup>
   <ItemGroup>

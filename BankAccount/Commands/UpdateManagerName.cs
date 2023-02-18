@@ -13,7 +13,7 @@ using System.Linq;
 using nostify;
 using nostify_example_contracts;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class UpdateManagerName
     {

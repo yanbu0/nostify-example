@@ -12,7 +12,7 @@ using nostify;
 using System.Linq;
 using Microsoft.Azure.Cosmos.Linq;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class CreateAccount
     {

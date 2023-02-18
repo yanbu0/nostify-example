@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using nostify;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class GetAccount
     {

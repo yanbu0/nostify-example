@@ -2,9 +2,9 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using nostify;
 
-[assembly: FunctionsStartup(typeof(nostify_example.Startup))]
+[assembly: FunctionsStartup(typeof(BankAccount_Service.Startup))]
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class Startup : FunctionsStartup
     {

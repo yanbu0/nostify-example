@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class OnAggregateRootUpdatedpdate
     {

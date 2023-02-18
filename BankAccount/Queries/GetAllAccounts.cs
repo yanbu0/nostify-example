@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Microsoft.Azure.Cosmos;
 using nostify;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class GetAllAccounts
     {

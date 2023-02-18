@@ -10,7 +10,7 @@ using System.Linq;
 using System;
 using nostify;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class BankAccountDetailsHub : ServerlessHub
     {

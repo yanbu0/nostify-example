@@ -15,7 +15,7 @@ using Microsoft.Azure.Cosmos.Linq;
 using System.Net;
 using System.Collections.Generic;
 
-namespace nostify_example
+namespace BankAccount_Service
 {
     public class RebuildContainer
     {
