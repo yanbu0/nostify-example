@@ -4,3 +4,8 @@ obj/
 *_blobstorage_*
 __azurite_db_blob__.json
 __azurite_db_blob_extent__.json
+Microservices/Account/obj/Account_Service.csproj.nuget.dgspec.json
+Microservices/Account/obj/Account_Service.csproj.nuget.g.props
+Microservices/Account/obj/Account_Service.csproj.nuget.g.targets
+Microservices/Account/obj/project.assets.json
+Microservices/Account/obj/project.nuget.cache
