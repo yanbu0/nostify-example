@@ -1,0 +1,59 @@
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
+using nostify;
+using Newtonsoft.Json;
+using Microsoft.Azure.Functions.Worker;
+using Newtonsoft.Json.Linq;
+
+namespace Account_Service;
+
+public class OnAccountStatusUpdated_For_FullAccount
+{
+    private readonly INostify _nostify;
+    private readonly HttpClient _httpClient;
+
+    public OnAccountStatusUpdated_For_FullAccount(INostify nostify, HttpClient httpClient)
+    {
+        this._nostify = nostify;
+        _httpClient = httpClient;
+    }
+
+    [Function(nameof(OnAccountStatusUpdated_For_FullAccount))]
+    public async Task Run([KafkaTrigger("BrokerList",
+                "Update_AccountStatus",
+                #if DEBUG
+                Protocol = BrokerProtocol.NotSet,
+                AuthenticationMode = BrokerAuthenticationMode.NotSet,
+                #else
+                Username = "KafkaApiKey",
+                Password = "KafkaApiSecret",
+                Protocol =  BrokerProtocol.SaslSsl,
+                AuthenticationMode = BrokerAuthenticationMode.Plain,
+                #endif
+                ConsumerGroup = "FullAccount")] NostifyKafkaTriggerEvent triggerEvent,
+        ILogger log)
+    {
+        Event? newEvent = triggerEvent.GetEvent();
+        try
+        {
+            if (newEvent != null)
+            {
+                // Use bulk container for updating multiple records
+                Container bulkProjectionContainer = await _nostify.GetBulkProjectionContainerAsync<FullAccount>();
+                
+                // Query all records that have statusId equal to the event aggregateRootId
+                var projectionsToUpdate = await bulkProjectionContainer
+                    .GetItemLinqQueryable<FullAccount>()
+                    .Where(p => p.statusId == newEvent.aggregateRootId)
+                    .ReadAllAsync();
+
+                // Use MultiApplyAndPersistAsync to update all projections
+                await bulkProjectionContainer.MultiApplyAndPersistAsync<FullAccount>(projectionsToUpdate, newEvent);
+            }                       
+        }
+        catch (Exception e)
+        {
+            await _nostify.HandleUndeliverableAsync(nameof(OnAccountStatusUpdated_For_FullAccount), e.Message, newEvent);
+        }
+    }
+}

@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservices", "{8A367DDA-5161-A942-4F09-60E4726C9306}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Account_Service", "Microservices\Account\Account_Service.csproj", "{8DACD534-1D39-9550-9394-9756308CCC33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Employee_Service", "Microservices\Employee\Employee_Service.csproj", "{74DC9A94-16AE-00FE-E17C-1EE8707E7654}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8DACD534-1D39-9550-9394-9756308CCC33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DACD534-1D39-9550-9394-9756308CCC33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DACD534-1D39-9550-9394-9756308CCC33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DACD534-1D39-9550-9394-9756308CCC33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74DC9A94-16AE-00FE-E17C-1EE8707E7654}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74DC9A94-16AE-00FE-E17C-1EE8707E7654}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74DC9A94-16AE-00FE-E17C-1EE8707E7654}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74DC9A94-16AE-00FE-E17C-1EE8707E7654}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8DACD534-1D39-9550-9394-9756308CCC33} = {8A367DDA-5161-A942-4F09-60E4726C9306}
+		{74DC9A94-16AE-00FE-E17C-1EE8707E7654} = {8A367DDA-5161-A942-4F09-60E4726C9306}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8017B772-1C6F-45A5-AD5C-062645AB83E8}
+	EndGlobalSection
+EndGlobal
