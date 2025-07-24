@@ -4,7 +4,7 @@ using nostify;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 
-namespace Account_Service_Service;
+namespace Account_Service;
 
 public class DeleteAccountStatus
 {
@@ -23,7 +23,7 @@ public class DeleteAccountStatus
         Guid aggregateId,
         ILogger log)
     {
-        Event pe = new Event(AccountStatusCommand.Delete, aggregateId, null);
+        Event pe = new Event(AccountStatusCommand.Delete, aggregateId, new { id = aggregateId });
         await _nostify.PersistEventAsync(pe);
 
         return aggregateId;

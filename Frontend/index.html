@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nostify Example - Account Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .config-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .result.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .result.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status-result {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 4px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .status-result.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .status-result.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status-result.success.error {
+            background: linear-gradient(to bottom, #d4edda 0%, #d4edda 50%, #f8d7da 50%, #f8d7da 100%);
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #007bff;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nostify Example - Create Account</h1>
+        
+        <div class="config-section">
+            <h3>Service Configuration</h3>
+            <div class="form-group">
+                <label for="serviceUrl">Account Service URL:</label>
+                <input type="text" id="serviceUrl" value="http://localhost:7071/api/Account" placeholder="http://localhost:7071/api/Account">
+                <small>Default is for local Azure Functions development</small>
+            </div>
+            <div class="form-group">
+                <label for="accountStatusUrl">Account Status Service URL:</label>
+                <input type="text" id="accountStatusUrl" value="http://localhost:7071/api/AccountStatus" placeholder="http://localhost:7071/api/AccountStatus">
+                <small>Used to load available account statuses</small>
+            </div>
+            <div class="form-group">
+                <label for="employeeUrl">Employee Service URL:</label>
+                <input type="text" id="employeeUrl" value="http://localhost:7072/api/Employee" placeholder="http://localhost:7072/api/Employee">
+                <small>Used to load available employees (runs on port 7072)</small>
+            </div>
+        </div>
+        
+        <form id="accountForm">
+            <div class="form-group">
+                <label for="accountName">Account Name:</label>
+                <input type="text" id="accountName" required placeholder="Enter account name">
+            </div>
+            
+            <div class="form-group">
+                <label for="statusId">Account Status:</label>
+                <select id="statusId" required>
+                    <option value="">Select an account status...</option>
+                </select>
+                <div class="button-group">
+                    <button type="button" id="loadStatusBtn" onclick="loadAccountStatuses()">Refresh Statuses</button>
+                    <button type="button" id="editStatusBtn" onclick="editAccountStatus()">Edit Status</button>
+                    <button type="button" id="createStatusBtn" onclick="createAccountStatus()">Create New Status</button>
+                    <button type="button" id="deleteStatusBtn" onclick="deleteAccountStatus()" class="btn-danger">Delete Status</button>
+                </div>
+                <div class="status-result" id="statusResult"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="accountManagerId">Account Manager:</label>
+                <select id="accountManagerId" required>
+                    <option value="">Select an account manager...</option>
+                </select>
+                <div class="button-group">
+                    <button type="button" id="loadEmployeesBtn" onclick="loadEmployees()">Refresh Employees</button>
+                    <button type="button" id="editEmployeeBtn" onclick="editEmployee()">Edit Employee</button>
+                    <button type="button" id="createEmployeeBtn" onclick="createEmployee()">Create New Employee</button>
+                    <button type="button" id="deleteEmployeeBtn" onclick="deleteEmployee()" class="btn-danger">Delete Employee</button>
+                </div>
+                <div class="status-result" id="employeeResult"></div>
+            </div>
+            
+            <button type="submit" id="submitBtn">Create Account</button>
+        </form>
+        
+        <div class="loading" id="loading">
+            Creating account...
+        </div>
+        
+        <div class="result" id="result"></div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+            <h3>Quick Test Values</h3>
+            <p>Use the "Fill Test Data" button to populate the form with sample data:</p>
+            <button type="button" onclick="fillTestData()">Fill Test Data</button>
+        </div>
+    </div>
+
+    <!-- Edit Account Status Modal -->
+    <div id="editStatusModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditStatusModal()">&times;</span>
+            <h2>Edit Account Status</h2>
+            <form id="editStatusForm">
+                <div class="form-group">
+                    <label for="editStatusName">Status Name:</label>
+                    <input type="text" id="editStatusName" required placeholder="Enter status name">
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="updateStatusBtn">Update Status</button>
+                    <button type="button" class="btn-secondary" onclick="closeEditStatusModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Account Status Modal -->
+    <div id="createStatusModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateStatusModal()">&times;</span>
+            <h2>Create New Account Status</h2>
+            <form id="createStatusForm">
+                <div class="form-group">
+                    <label for="newStatusName">Status Name:</label>
+                    <input type="text" id="newStatusName" required placeholder="Enter status name">
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="createNewStatusBtn">Create Status</button>
+                    <button type="button" class="btn-secondary" onclick="closeCreateStatusModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Account Status Confirmation Modal -->
+    <div id="deleteStatusModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDeleteStatusModal()">&times;</span>
+            <h2>Delete Account Status</h2>
+            <p>Are you sure you want to delete the account status "<strong id="deleteStatusName"></strong>"?</p>
+            <p style="color: #dc3545; font-weight: bold;">⚠️ This action cannot be undone!</p>
+            <div class="button-group">
+                <button type="button" id="confirmDeleteBtn" class="btn-danger" onclick="confirmDeleteStatus()">Delete Status</button>
+                <button type="button" class="btn-secondary" onclick="closeDeleteStatusModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Employee Modal -->
+    <div id="editEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditEmployeeModal()">&times;</span>
+            <h2>Edit Employee</h2>
+            <form id="editEmployeeForm">
+                <div class="form-group">
+                    <label for="editEmployeeName">Employee Name:</label>
+                    <input type="text" id="editEmployeeName" required placeholder="Enter employee name">
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="updateEmployeeBtn">Update Employee</button>
+                    <button type="button" class="btn-secondary" onclick="closeEditEmployeeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Employee Modal -->
+    <div id="createEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateEmployeeModal()">&times;</span>
+            <h2>Create New Employee</h2>
+            <form id="createEmployeeForm">
+                <div class="form-group">
+                    <label for="newEmployeeName">Employee Name:</label>
+                    <input type="text" id="newEmployeeName" required placeholder="Enter employee name">
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="createNewEmployeeBtn">Create Employee</button>
+                    <button type="button" class="btn-secondary" onclick="closeCreateEmployeeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Employee Confirmation Modal -->
+    <div id="deleteEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDeleteEmployeeModal()">&times;</span>
+            <h2>Delete Employee</h2>
+            <p>Are you sure you want to delete the employee "<strong id="deleteEmployeeName"></strong>"?</p>
+            <p style="color: #dc3545; font-weight: bold;">⚠️ This action cannot be undone!</p>
+            <div class="button-group">
+                <button type="button" id="confirmDeleteEmployeeBtn" class="btn-danger" onclick="confirmDeleteEmployee()">Delete Employee</button>
+                <button type="button" class="btn-secondary" onclick="closeDeleteEmployeeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const accountForm = document.getElementById('accountForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const statusResult = document.getElementById('statusResult');
+        const employeeResult = document.getElementById('employeeResult');
+        const statusDropdown = document.getElementById('statusId');
+        const loadStatusBtn = document.getElementById('loadStatusBtn');
+        const employeeDropdown = document.getElementById('accountManagerId');
+        const loadEmployeesBtn = document.getElementById('loadEmployeesBtn');
+        
+        // Modal elements
+        const editStatusModal = document.getElementById('editStatusModal');
+        const createStatusModal = document.getElementById('createStatusModal');
+        const deleteStatusModal = document.getElementById('deleteStatusModal');
+        const editEmployeeModal = document.getElementById('editEmployeeModal');
+        const createEmployeeModal = document.getElementById('createEmployeeModal');
+        const deleteEmployeeModal = document.getElementById('deleteEmployeeModal');
+        const editStatusForm = document.getElementById('editStatusForm');
+        const createStatusForm = document.getElementById('createStatusForm');
+        const editEmployeeForm = document.getElementById('editEmployeeForm');
+        const createEmployeeForm = document.getElementById('createEmployeeForm');
+        
+        let currentEditingStatusId = null;
+        let currentDeletingStatusId = null;
+        let currentEditingEmployeeId = null;
+        let currentDeletingEmployeeId = null;
+        let refreshInterval = null;
+        let expectedNewStatusName = null;
+        let employeeRefreshInterval = null;
+        let expectedNewEmployeeName = null;
+        let isStatusUpdateOperation = false;
+        let isEmployeeUpdateOperation = false;
+        let isStatusDeleteOperation = false;
+        let isEmployeeDeleteOperation = false;
+        let expectedDeletedStatusId = null;
+        let expectedDeletedEmployeeId = null;
+        
+        // Load account statuses from the service
+        async function loadAccountStatuses(waitForNewStatus = false, newStatusName = null, deletedStatusId = null) {
+            const accountStatusUrl = document.getElementById('accountStatusUrl').value.trim();
+            
+            if (!accountStatusUrl) {
+                showStatusResult('Please enter the Account Status Service URL first.', false);
+                return;
+            }
+            
+            // Only show loading state if not auto-refreshing
+            if (!waitForNewStatus) {
+                loadStatusBtn.disabled = true;
+                loadStatusBtn.textContent = 'Loading...';
+            }
+            
+            try {
+                const response = await fetch(accountStatusUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const accountStatuses = await response.json();
+                    const previousSelectedId = statusDropdown.value;
+                    
+                    // Clear existing options except the default one
+                    statusDropdown.innerHTML = '<option value="">Select an account status...</option>';
+                    
+                    let foundNewStatus = false;
+                    let deletionConfirmed = false;
+                    
+                    // Check if we're waiting for a deleted status to disappear
+                    if (deletedStatusId) {
+                        deletionConfirmed = !accountStatuses.some(status => status.id === deletedStatusId);
+                    }
+                    
+                    // Add options for each account status
+                    accountStatuses.forEach(status => {
+                        if (!status.isDeleted) { // Only show non-deleted statuses
+                            const option = document.createElement('option');
+                            option.value = status.id;
+                            option.textContent = status.name;
+                            statusDropdown.appendChild(option);
+                            
+                            // Check if this is the newly created status we're waiting for
+                            if (waitForNewStatus && newStatusName && status.name === newStatusName) {
+                                foundNewStatus = true;
+                                // Auto-select the newly created status
+                                statusDropdown.value = status.id;
+                            }
+                        }
+                    });
+                    
+                    // Restore previous selection if not waiting for new status
+                    if (!waitForNewStatus && previousSelectedId && !deletedStatusId) {
+                        statusDropdown.value = previousSelectedId;
+                    }
+                    
+                    // Stop auto-refresh if we found the new status, deleted status confirmed, or not waiting for one
+                    if (!waitForNewStatus || foundNewStatus || deletionConfirmed) {
+                        if (refreshInterval) {
+                            // Capture the operation type before clearing the interval
+                            const wasUpdateOperation = isStatusUpdateOperation;
+                            const wasDeleteOperation = isStatusDeleteOperation;
+                            
+                            clearInterval(refreshInterval);
+                            refreshInterval = null;
+                            expectedNewStatusName = null;
+                            isStatusUpdateOperation = false; // Reset the flag
+                            isStatusDeleteOperation = false; // Reset the flag
+                            expectedDeletedStatusId = null;
+                            
+                            if (foundNewStatus) {
+                                // Use the captured operation type
+                                const message = wasUpdateOperation ? 
+                                    `Account status "${newStatusName}" updated and loaded successfully!` : 
+                                    `Account status "${newStatusName}" created and loaded successfully!`;
+                                showStatusResult(message, true);
+                            } else if (deletionConfirmed && wasDeleteOperation) {
+                                showStatusResult(`Account status deleted and removed from list successfully!`, true);
+                            }
+                        } else if (!waitForNewStatus) {
+                            showStatusResult(`Successfully loaded ${accountStatuses.filter(s => !s.isDeleted).length} account statuses.`, true);
+                        }
+                    }
+                } else {
+                    const errorText = await response.text();
+                    if (!waitForNewStatus) {
+                        // Check if there's already a success message displayed
+                        let errorMessage = `
+                            <strong>Error loading account statuses:</strong><br>
+                            Status: ${response.status} ${response.statusText}<br>
+                            ${errorText ? `Details: ${errorText}` : ''}
+                        `;
+                        
+                        if (statusResult.style.display === 'block' && statusResult.className.includes('success')) {
+                            // Append error below existing success message
+                            statusResult.innerHTML = statusResult.innerHTML + '<hr style="margin: 10px 0; border: 1px solid #ccc;">' + errorMessage;
+                            statusResult.className = 'status-result success error'; // Show both styles
+                        } else {
+                            showStatusResult(errorMessage, false);
+                        }
+                    }
+                    
+                    // Stop auto-refresh on error
+                    if (refreshInterval) {
+                        clearInterval(refreshInterval);
+                        refreshInterval = null;
+                        expectedNewStatusName = null;
+                        isStatusUpdateOperation = false; // Reset the flag
+                        isStatusDeleteOperation = false; // Reset the flag
+                        expectedDeletedStatusId = null;
+                    }
+                }
+            } catch (error) {
+                if (!waitForNewStatus) {
+                    // Check if there's already a success message displayed
+                    let errorMessage = `
+                        <strong>Network error loading account statuses:</strong><br>
+                        ${error.message}<br><br>
+                        <strong>Troubleshooting:</strong><br>
+                        • Make sure the Account service is running<br>
+                        • Check if the Account Status service URL is correct<br>
+                        • Verify CORS settings if running locally
+                    `;
+                    
+                    if (statusResult.style.display === 'block' && statusResult.className.includes('success')) {
+                        // Append error below existing success message
+                        statusResult.innerHTML = statusResult.innerHTML + '<hr style="margin: 10px 0; border: 1px solid #ccc;">' + errorMessage;
+                        statusResult.className = 'status-result success error'; // Show both styles
+                    } else {
+                        showStatusResult(errorMessage, false);
+                    }
+                }
+                
+                // Stop auto-refresh on error
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                    expectedNewStatusName = null;
+                    isStatusUpdateOperation = false; // Reset the flag
+                    isStatusDeleteOperation = false; // Reset the flag
+                    expectedDeletedStatusId = null;
+                }
+            } finally {
+                if (!waitForNewStatus) {
+                    loadStatusBtn.disabled = false;
+                    loadStatusBtn.textContent = 'Refresh Statuses';
+                }
+            }
+        }
+        
+        // Start auto-refresh for newly created status
+        function startAutoRefreshForNewStatus(statusName) {
+            expectedNewStatusName = statusName;
+            isStatusUpdateOperation = false; // This is a create operation
+            
+            // Clear any existing interval
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            // Start refreshing every 1 second
+            refreshInterval = setInterval(() => {
+                loadAccountStatuses(true, expectedNewStatusName);
+            }, 1000);
+            
+            // Stop auto-refresh after 30 seconds to prevent infinite polling
+            setTimeout(() => {
+                // Only stop if still refreshing (not already completed)
+                if (refreshInterval && expectedNewStatusName === statusName) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                    expectedNewStatusName = null;
+                    isStatusUpdateOperation = false;
+                    isStatusDeleteOperation = false;
+                    expectedDeletedStatusId = null;
+                    showStatusResult('Auto-refresh stopped. Please manually refresh if needed.', false);
+                }
+            }, 30000);
+        }
+        
+        // Start auto-refresh for updated status
+        function startAutoRefreshForUpdatedStatus(statusName, statusId) {
+            expectedNewStatusName = statusName;
+            isStatusUpdateOperation = true; // This is an update operation
+            
+            // Clear any existing interval
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            // Start refreshing every 1 second
+            refreshInterval = setInterval(() => {
+                loadAccountStatuses(true, expectedNewStatusName);
+            }, 1000);
+            
+            // Stop auto-refresh after 30 seconds to prevent infinite polling
+            setTimeout(() => {
+                // Only stop if still refreshing (not already completed)
+                if (refreshInterval && expectedNewStatusName === statusName) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                    expectedNewStatusName = null;
+                    isStatusUpdateOperation = false;
+                    isStatusDeleteOperation = false;
+                    expectedDeletedStatusId = null;
+                    showStatusResult('Auto-refresh stopped. Please manually refresh if needed.', false);
+                }
+            }, 30000);
+        }
+        
+        // Start auto-refresh for newly created employee
+        function startAutoRefreshForNewEmployee(employeeName) {
+            expectedNewEmployeeName = employeeName;
+            isEmployeeUpdateOperation = false; // This is a create operation
+            
+            // Clear any existing interval
+            if (employeeRefreshInterval) {
+                clearInterval(employeeRefreshInterval);
+            }
+            
+            // Start refreshing every 1 second
+            employeeRefreshInterval = setInterval(() => {
+                loadEmployees(true, expectedNewEmployeeName);
+            }, 1000);
+            
+            // Stop auto-refresh after 30 seconds to prevent infinite polling
+            setTimeout(() => {
+                // Only stop if still refreshing (not already completed)
+                if (employeeRefreshInterval && expectedNewEmployeeName === employeeName) {
+                    clearInterval(employeeRefreshInterval);
+                    employeeRefreshInterval = null;
+                    expectedNewEmployeeName = null;
+                    isEmployeeUpdateOperation = false;
+                    isEmployeeDeleteOperation = false;
+                    expectedDeletedEmployeeId = null;
+                    showEmployeeResult('Auto-refresh stopped. Please manually refresh if needed.', false);
+                }
+            }, 30000);
+        }
+        
+        // Start auto-refresh for updated employee
+        function startAutoRefreshForUpdatedEmployee(employeeName, employeeId) {
+            expectedNewEmployeeName = employeeName;
+            isEmployeeUpdateOperation = true; // This is an update operation
+            
+            // Clear any existing interval
+            if (employeeRefreshInterval) {
+                clearInterval(employeeRefreshInterval);
+            }
+            
+            // Start refreshing every 1 second
+            employeeRefreshInterval = setInterval(() => {
+                loadEmployees(true, expectedNewEmployeeName);
+            }, 1000);
+            
+            // Stop auto-refresh after 30 seconds to prevent infinite polling
+            setTimeout(() => {
+                // Only stop if still refreshing (not already completed)
+                if (employeeRefreshInterval && expectedNewEmployeeName === employeeName) {
+                    clearInterval(employeeRefreshInterval);
+                    employeeRefreshInterval = null;
+                    expectedNewEmployeeName = null;
+                    isEmployeeUpdateOperation = false;
+                    isEmployeeDeleteOperation = false;
+                    expectedDeletedEmployeeId = null;
+                    showEmployeeResult('Auto-refresh stopped. Please manually refresh if needed.', false);
+                }
+            }, 30000);
+        }
+        
+        // Start auto-refresh for deleted status
+        function startAutoRefreshForDeletedStatus(statusId, statusName) {
+            expectedDeletedStatusId = statusId;
+            isStatusDeleteOperation = true; // This is a delete operation
+            
+            // Clear any existing interval
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            // Start refreshing every 1 second
+            refreshInterval = setInterval(() => {
+                loadAccountStatuses(true, null, statusId);
+            }, 1000);
+            
+            // Stop auto-refresh after 30 seconds to prevent infinite polling
+            setTimeout(() => {
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                    expectedDeletedStatusId = null;
+                    isStatusDeleteOperation = false;
+                    showStatusResult('Auto-refresh stopped. Please manually refresh if needed.', false);
+                }
+            }, 30000);
+        }
+        
+        // Start auto-refresh for deleted employee
+        function startAutoRefreshForDeletedEmployee(employeeId, employeeName) {
+            expectedDeletedEmployeeId = employeeId;
+            isEmployeeDeleteOperation = true; // This is a delete operation
+            
+            // Clear any existing interval
+            if (employeeRefreshInterval) {
+                clearInterval(employeeRefreshInterval);
+            }
+            
+            // Start refreshing every 1 second
+            employeeRefreshInterval = setInterval(() => {
+                loadEmployees(true, null, employeeId);
+            }, 1000);
+            
+            // Stop auto-refresh after 30 seconds to prevent infinite polling
+            setTimeout(() => {
+                if (employeeRefreshInterval) {
+                    clearInterval(employeeRefreshInterval);
+                    employeeRefreshInterval = null;
+                    expectedDeletedEmployeeId = null;
+                    isEmployeeDeleteOperation = false;
+                    showEmployeeResult('Auto-refresh stopped. Please manually refresh if needed.', false);
+                }
+            }, 30000);
+        }
+        
+        // Load employees from the service
+        async function loadEmployees(waitForNewEmployee = false, newEmployeeName = null, deletedEmployeeId = null) {
+            const employeeUrl = document.getElementById('employeeUrl').value.trim();
+            
+            if (!employeeUrl) {
+                showEmployeeResult('Please enter the Employee Service URL first.', false);
+                return;
+            }
+            
+            // Only show loading state if not auto-refreshing
+            if (!waitForNewEmployee) {
+                loadEmployeesBtn.disabled = true;
+                loadEmployeesBtn.textContent = 'Loading...';
+            }
+            
+            try {
+                const response = await fetch(employeeUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const employees = await response.json();
+                    const previousSelectedId = employeeDropdown.value;
+                    
+                    // Clear existing options except the default one
+                    employeeDropdown.innerHTML = '<option value="">Select an account manager...</option>';
+                    
+                    let foundNewEmployee = false;
+                    let employeeDeletionConfirmed = false;
+                    
+                    // Check if we're waiting for a deleted employee to disappear
+                    if (deletedEmployeeId) {
+                        employeeDeletionConfirmed = !employees.some(employee => employee.id === deletedEmployeeId);
+                    }
+                    
+                    // Add options for each employee
+                    employees.forEach(employee => {
+                        if (!employee.isDeleted) { // Only show non-deleted employees
+                            const option = document.createElement('option');
+                            option.value = employee.id;
+                            option.textContent = employee.name;
+                            employeeDropdown.appendChild(option);
+                            
+                            // Check if this is the newly created employee we're waiting for
+                            if (waitForNewEmployee && newEmployeeName && employee.name === newEmployeeName) {
+                                foundNewEmployee = true;
+                                // Auto-select the newly created employee
+                                employeeDropdown.value = employee.id;
+                            }
+                        }
+                    });
+                    
+                    // Restore previous selection if not waiting for new employee
+                    if (!waitForNewEmployee && previousSelectedId && !deletedEmployeeId) {
+                        employeeDropdown.value = previousSelectedId;
+                    }
+                    
+                    // Stop auto-refresh if we found the new employee, deleted employee confirmed, or not waiting for one
+                    if (!waitForNewEmployee || foundNewEmployee || employeeDeletionConfirmed) {
+                        if (employeeRefreshInterval) {
+                            // Capture the operation type before clearing the interval
+                            const wasUpdateOperation = isEmployeeUpdateOperation;
+                            const wasDeleteOperation = isEmployeeDeleteOperation;
+                            
+                            clearInterval(employeeRefreshInterval);
+                            employeeRefreshInterval = null;
+                            expectedNewEmployeeName = null;
+                            isEmployeeUpdateOperation = false; // Reset the flag
+                            isEmployeeDeleteOperation = false; // Reset the flag
+                            expectedDeletedEmployeeId = null;
+                            
+                            if (foundNewEmployee) {
+                                // Use the captured operation type
+                                const message = wasUpdateOperation ? 
+                                    `Employee "${newEmployeeName}" updated and loaded successfully!` : 
+                                    `Employee "${newEmployeeName}" created and loaded successfully!`;
+                                showEmployeeResult(message, true);
+                            } else if (employeeDeletionConfirmed && wasDeleteOperation) {
+                                showEmployeeResult(`Employee deleted and removed from list successfully!`, true);
+                            }
+                        } else if (!waitForNewEmployee) {
+                            showEmployeeResult(`Successfully loaded ${employees.filter(e => !e.isDeleted).length} employees.`, true);
+                        }
+                    }
+                } else {
+                    const errorText = await response.text();
+                    if (!waitForNewEmployee) {
+                        // Check if there's already a success message displayed
+                        let errorMessage = `
+                            <strong>Error loading employees:</strong><br>
+                            Status: ${response.status} ${response.statusText}<br>
+                            ${errorText ? `Details: ${errorText}` : ''}
+                        `;
+                        
+                        if (employeeResult.style.display === 'block' && employeeResult.className.includes('success')) {
+                            // Append error below existing success message
+                            employeeResult.innerHTML = employeeResult.innerHTML + '<hr style="margin: 10px 0; border: 1px solid #ccc;">' + errorMessage;
+                            employeeResult.className = 'status-result success error'; // Show both styles
+                        } else {
+                            showEmployeeResult(errorMessage, false);
+                        }
+                    }
+                    
+                    // Stop auto-refresh on error
+                    if (employeeRefreshInterval) {
+                        clearInterval(employeeRefreshInterval);
+                        employeeRefreshInterval = null;
+                        expectedNewEmployeeName = null;
+                        isEmployeeUpdateOperation = false; // Reset the flag
+                        isEmployeeDeleteOperation = false; // Reset the flag
+                        expectedDeletedEmployeeId = null;
+                    }
+                }
+            } catch (error) {
+                if (!waitForNewEmployee) {
+                    // Check if there's already a success message displayed
+                    let errorMessage = `
+                        <strong>Network error loading employees:</strong><br>
+                        ${error.message}<br><br>
+                        <strong>Troubleshooting:</strong><br>
+                        • Make sure the Employee service is running<br>
+                        • Check if the Employee service URL is correct<br>
+                        • Verify CORS settings if running locally
+                    `;
+                    
+                    if (employeeResult.style.display === 'block' && employeeResult.className.includes('success')) {
+                        // Append error below existing success message
+                        employeeResult.innerHTML = employeeResult.innerHTML + '<hr style="margin: 10px 0; border: 1px solid #ccc;">' + errorMessage;
+                        employeeResult.className = 'status-result success error'; // Show both styles
+                    } else {
+                        showEmployeeResult(errorMessage, false);
+                    }
+                }
+                
+                // Stop auto-refresh on error
+                if (employeeRefreshInterval) {
+                    clearInterval(employeeRefreshInterval);
+                    employeeRefreshInterval = null;
+                    expectedNewEmployeeName = null;
+                    isEmployeeUpdateOperation = false; // Reset the flag
+                    isEmployeeDeleteOperation = false; // Reset the flag
+                    expectedDeletedEmployeeId = null;
+                }
+            } finally {
+                if (!waitForNewEmployee) {
+                    loadEmployeesBtn.disabled = false;
+                    loadEmployeesBtn.textContent = 'Refresh Employees';
+                }
+            }
+        }
+        
+        // Modal control functions
+        function editAccountStatus() {
+            const selectedStatusId = statusDropdown.value;
+            if (!selectedStatusId) {
+                showStatusResult('Please select an account status to edit.', false);
+                return;
+            }
+            
+            const selectedStatusName = statusDropdown.options[statusDropdown.selectedIndex].text;
+            currentEditingStatusId = selectedStatusId;
+            
+            document.getElementById('editStatusName').value = selectedStatusName;
+            editStatusModal.style.display = 'block';
+        }
+        
+        function createAccountStatus() {
+            document.getElementById('newStatusName').value = '';
+            createStatusModal.style.display = 'block';
+        }
+        
+        function deleteAccountStatus() {
+            const selectedStatusId = statusDropdown.value;
+            if (!selectedStatusId) {
+                showStatusResult('Please select an account status to delete.', false);
+                return;
+            }
+            
+            const selectedStatusName = statusDropdown.options[statusDropdown.selectedIndex].text;
+            currentDeletingStatusId = selectedStatusId;
+            
+            document.getElementById('deleteStatusName').textContent = selectedStatusName;
+            deleteStatusModal.style.display = 'block';
+        }
+        
+        function closeEditStatusModal() {
+            editStatusModal.style.display = 'none';
+            currentEditingStatusId = null;
+        }
+        
+        function closeCreateStatusModal() {
+            createStatusModal.style.display = 'none';
+        }
+        
+        function closeDeleteStatusModal() {
+            deleteStatusModal.style.display = 'none';
+            currentDeletingStatusId = null;
+        }
+        
+        // Employee modal control functions
+        function editEmployee() {
+            const selectedEmployeeId = employeeDropdown.value;
+            if (!selectedEmployeeId) {
+                showEmployeeResult('Please select an employee to edit.', false);
+                return;
+            }
+            
+            const selectedEmployeeName = employeeDropdown.options[employeeDropdown.selectedIndex].text;
+            currentEditingEmployeeId = selectedEmployeeId;
+            
+            document.getElementById('editEmployeeName').value = selectedEmployeeName;
+            editEmployeeModal.style.display = 'block';
+        }
+        
+        function createEmployee() {
+            document.getElementById('newEmployeeName').value = '';
+            createEmployeeModal.style.display = 'block';
+        }
+        
+        function deleteEmployee() {
+            const selectedEmployeeId = employeeDropdown.value;
+            if (!selectedEmployeeId) {
+                showEmployeeResult('Please select an employee to delete.', false);
+                return;
+            }
+            
+            const selectedEmployeeName = employeeDropdown.options[employeeDropdown.selectedIndex].text;
+            currentDeletingEmployeeId = selectedEmployeeId;
+            
+            document.getElementById('deleteEmployeeName').textContent = selectedEmployeeName;
+            deleteEmployeeModal.style.display = 'block';
+        }
+        
+        function closeEditEmployeeModal() {
+            editEmployeeModal.style.display = 'none';
+            currentEditingEmployeeId = null;
+        }
+        
+        function closeCreateEmployeeModal() {
+            createEmployeeModal.style.display = 'none';
+        }
+        
+        function closeDeleteEmployeeModal() {
+            deleteEmployeeModal.style.display = 'none';
+            currentDeletingEmployeeId = null;
+        }
+        
+        // Confirm delete operation
+        async function confirmDeleteStatus() {
+            if (!currentDeletingStatusId) {
+                showStatusResult('No status selected for deletion.', false);
+                return;
+            }
+            
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            const originalText = confirmBtn.textContent;
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Deleting...';
+            
+            try {
+                const accountStatusUrl = document.getElementById('accountStatusUrl').value.trim();
+                const deleteUrl = `${accountStatusUrl}/${currentDeletingStatusId}`;
+                
+                const response = await fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const deletedStatusName = document.getElementById('deleteStatusName').textContent;
+                    const deletedStatusId = currentDeletingStatusId; // Capture ID before closing modal
+                    showStatusResult(`Account status "${deletedStatusName}" deleted successfully! Auto-refreshing to confirm removal...`, true);
+                    closeDeleteStatusModal();
+                    
+                    // Start auto-refresh to wait for the deleted status to disappear
+                    startAutoRefreshForDeletedStatus(deletedStatusId, deletedStatusName);
+                } else {
+                    const errorText = await response.text();
+                    showStatusResult(`
+                        <strong>Error deleting account status:</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        ${errorText ? `Details: ${errorText}` : ''}
+                    `, false);
+                }
+            } catch (error) {
+                showStatusResult(`
+                    <strong>Network error deleting account status:</strong><br>
+                    ${error.message}
+                `, false);
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = originalText;
+            }
+        }
+        
+        // Confirm delete employee operation
+        async function confirmDeleteEmployee() {
+            if (!currentDeletingEmployeeId) {
+                showEmployeeResult('No employee selected for deletion.', false);
+                return;
+            }
+            
+            const confirmBtn = document.getElementById('confirmDeleteEmployeeBtn');
+            const originalText = confirmBtn.textContent;
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Deleting...';
+            
+            try {
+                const employeeUrl = document.getElementById('employeeUrl').value.trim();
+                const deleteUrl = `${employeeUrl}/${currentDeletingEmployeeId}`;
+                
+                const response = await fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const deletedEmployeeName = document.getElementById('deleteEmployeeName').textContent;
+                    const deletedEmployeeId = currentDeletingEmployeeId; // Capture ID before closing modal
+                    showEmployeeResult(`Employee "${deletedEmployeeName}" deleted successfully! Auto-refreshing to confirm removal...`, true);
+                    closeDeleteEmployeeModal();
+                    
+                    // Start auto-refresh to wait for the deleted employee to disappear
+                    startAutoRefreshForDeletedEmployee(deletedEmployeeId, deletedEmployeeName);
+                } else {
+                    const errorText = await response.text();
+                    showEmployeeResult(`
+                        <strong>Error deleting employee:</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        ${errorText ? `Details: ${errorText}` : ''}
+                    `, false);
+                }
+            } catch (error) {
+                showEmployeeResult(`
+                    <strong>Network error deleting employee:</strong><br>
+                    ${error.message}
+                `, false);
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = originalText;
+            }
+        }
+        
+        // Handle edit status form submission
+        editStatusForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const statusName = document.getElementById('editStatusName').value.trim();
+            if (!statusName) {
+                showStatusResult('Please enter a status name.', false);
+                return;
+            }
+            
+            const updateBtn = document.getElementById('updateStatusBtn');
+            updateBtn.disabled = true;
+            updateBtn.textContent = 'Updating...';
+            
+            try {
+                const accountStatusUrl = document.getElementById('accountStatusUrl').value.trim();
+                const updateUrl = accountStatusUrl; // Same endpoint for update
+                
+                const statusData = {
+                    id: currentEditingStatusId,
+                    name: statusName
+                };
+                
+                const response = await fetch(updateUrl, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(statusData)
+                });
+                
+                if (response.ok) {
+                    showStatusResult(`Account status "${statusName}" updated successfully! Auto-refreshing to load updated status...`, true);
+                    closeEditStatusModal();
+                    
+                    // Start auto-refresh to wait for the updated status to appear
+                    startAutoRefreshForUpdatedStatus(statusName, currentEditingStatusId);
+                } else {
+                    const errorText = await response.text();
+                    showStatusResult(`
+                        <strong>Error updating account status:</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        ${errorText ? `Details: ${errorText}` : ''}
+                    `, false);
+                }
+            } catch (error) {
+                showStatusResult(`
+                    <strong>Network error updating account status:</strong><br>
+                    ${error.message}
+                `, false);
+            } finally {
+                updateBtn.disabled = false;
+                updateBtn.textContent = 'Update Status';
+            }
+        });
+        
+        // Handle create status form submission
+        createStatusForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const statusName = document.getElementById('newStatusName').value.trim();
+            if (!statusName) {
+                showStatusResult('Please enter a status name.', false);
+                return;
+            }
+            
+            const createBtn = document.getElementById('createNewStatusBtn');
+            createBtn.disabled = true;
+            createBtn.textContent = 'Creating...';
+            
+            try {
+                const accountStatusUrl = document.getElementById('accountStatusUrl').value.trim();
+                
+                const statusData = {
+                    name: statusName
+                };
+                
+                const response = await fetch(accountStatusUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(statusData)
+                });
+                
+                if (response.ok) {
+                    const newStatusId = await response.text();
+                    showStatusResult(`Account status "${statusName}" created successfully! ID: ${newStatusId}. Auto-refreshing to load new status...`, true);
+                    closeCreateStatusModal();
+                    
+                    // Start auto-refresh to wait for the new status to appear
+                    startAutoRefreshForNewStatus(statusName);
+                } else {
+                    const errorText = await response.text();
+                    showStatusResult(`
+                        <strong>Error creating account status:</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        ${errorText ? `Details: ${errorText}` : ''}
+                    `, false);
+                }
+            } catch (error) {
+                showStatusResult(`
+                    <strong>Network error creating account status:</strong><br>
+                    ${error.message}
+                `, false);
+            } finally {
+                createBtn.disabled = false;
+                createBtn.textContent = 'Create Status';
+            }
+        });
+        
+        // Handle edit employee form submission
+        editEmployeeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const employeeName = document.getElementById('editEmployeeName').value.trim();
+            if (!employeeName) {
+                showEmployeeResult('Please enter an employee name.', false);
+                return;
+            }
+            
+            const updateBtn = document.getElementById('updateEmployeeBtn');
+            updateBtn.disabled = true;
+            updateBtn.textContent = 'Updating...';
+            
+            try {
+                const employeeUrl = document.getElementById('employeeUrl').value.trim();
+                const updateUrl = employeeUrl; // Same endpoint for update
+                
+                const employeeData = {
+                    id: currentEditingEmployeeId,
+                    name: employeeName
+                };
+                
+                const response = await fetch(updateUrl, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(employeeData)
+                });
+                
+                if (response.ok) {
+                    showEmployeeResult(`Employee "${employeeName}" updated successfully! Auto-refreshing to load updated employee...`, true);
+                    closeEditEmployeeModal();
+                    
+                    // Start auto-refresh to wait for the updated employee to appear
+                    startAutoRefreshForUpdatedEmployee(employeeName, currentEditingEmployeeId);
+                } else {
+                    const errorText = await response.text();
+                    showEmployeeResult(`
+                        <strong>Error updating employee:</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        ${errorText ? `Details: ${errorText}` : ''}
+                    `, false);
+                }
+            } catch (error) {
+                showEmployeeResult(`
+                    <strong>Network error updating employee:</strong><br>
+                    ${error.message}
+                `, false);
+            } finally {
+                updateBtn.disabled = false;
+                updateBtn.textContent = 'Update Employee';
+            }
+        });
+        
+        // Handle create employee form submission
+        createEmployeeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const employeeName = document.getElementById('newEmployeeName').value.trim();
+            if (!employeeName) {
+                showEmployeeResult('Please enter an employee name.', false);
+                return;
+            }
+            
+            const createBtn = document.getElementById('createNewEmployeeBtn');
+            createBtn.disabled = true;
+            createBtn.textContent = 'Creating...';
+            
+            try {
+                const employeeUrl = document.getElementById('employeeUrl').value.trim();
+                
+                const employeeData = {
+                    name: employeeName
+                };
+                
+                const response = await fetch(employeeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(employeeData)
+                });
+                
+                if (response.ok) {
+                    const newEmployeeId = await response.text();
+                    showEmployeeResult(`Employee "${employeeName}" created successfully! ID: ${newEmployeeId}. Auto-refreshing to load new employee...`, true);
+                    closeCreateEmployeeModal();
+                    
+                    // Start auto-refresh to wait for the new employee to appear
+                    startAutoRefreshForNewEmployee(employeeName);
+                } else {
+                    const errorText = await response.text();
+                    showEmployeeResult(`
+                        <strong>Error creating employee:</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        ${errorText ? `Details: ${errorText}` : ''}
+                    `, false);
+                }
+            } catch (error) {
+                showEmployeeResult(`
+                    <strong>Network error creating employee:</strong><br>
+                    ${error.message}
+                `, false);
+            } finally {
+                createBtn.disabled = false;
+                createBtn.textContent = 'Create Employee';
+            }
+        });
+        
+        // Validate GUID format
+        function isValidGuid(str) {
+            const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+            return guidRegex.test(str);
+        }
+        
+        // Show result message
+        function showResult(message, isSuccess) {
+            result.style.display = 'block';
+            result.className = `result ${isSuccess ? 'success' : 'error'}`;
+            result.innerHTML = message;
+        }
+        
+        // Show status result message
+        function showStatusResult(message, isSuccess) {
+            statusResult.style.display = 'block';
+            statusResult.className = `status-result ${isSuccess ? 'success' : 'error'}`;
+            statusResult.innerHTML = message;
+            
+            // Auto-hide success messages after 10 seconds
+            if (isSuccess) {
+                setTimeout(() => {
+                    if (statusResult.className.includes('success')) {
+                        statusResult.style.display = 'none';
+                    }
+                }, 10000);
+            }
+        }
+        
+        // Show employee result message
+        function showEmployeeResult(message, isSuccess) {
+            employeeResult.style.display = 'block';
+            employeeResult.className = `status-result ${isSuccess ? 'success' : 'error'}`;
+            employeeResult.innerHTML = message;
+            
+            // Auto-hide success messages after 10 seconds
+            if (isSuccess) {
+                setTimeout(() => {
+                    if (employeeResult.className.includes('success')) {
+                        employeeResult.style.display = 'none';
+                    }
+                }, 10000);
+            }
+        }
+        
+        // Fill test data
+        function fillTestData() {
+            document.getElementById('accountName').value = 'Test Account ' + Date.now();
+            
+            // If there are statuses loaded, select the first one
+            const statusOptions = statusDropdown.options;
+            if (statusOptions.length > 1) {
+                statusDropdown.selectedIndex = 1; // Select first non-default option
+            }
+            
+            // If there are employees loaded, select the first one
+            const employeeOptions = employeeDropdown.options;
+            if (employeeOptions.length > 1) {
+                employeeDropdown.selectedIndex = 1; // Select first non-default option
+            }
+            
+            if (statusOptions.length <= 1 || employeeOptions.length <= 1) {
+                showResult('Please load account statuses and employees first using the "Refresh" buttons.', false);
+            }
+        }
+        
+        // Handle form submission
+        accountForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const serviceUrl = document.getElementById('serviceUrl').value.trim();
+            const accountName = document.getElementById('accountName').value.trim();
+            const statusId = document.getElementById('statusId').value.trim();
+            const accountManagerId = document.getElementById('accountManagerId').value.trim();
+            
+            // Validation
+            if (!accountName) {
+                showResult('Please enter an account name.', false);
+                return;
+            }
+            
+            if (!statusId) {
+                showResult('Please select an account status.', false);
+                return;
+            }
+            
+            if (!accountManagerId) {
+                showResult('Please select an account manager.', false);
+                return;
+            }
+            
+            // Prepare the request
+            const accountData = {
+                name: accountName,
+                statusId: statusId,
+                accountManagerId: accountManagerId
+            };
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch(serviceUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(accountData)
+                });
+                
+                if (response.ok) {
+                    const newAccountId = await response.text();
+                    const selectedStatus = statusDropdown.options[statusDropdown.selectedIndex].text;
+                    const selectedEmployee = employeeDropdown.options[employeeDropdown.selectedIndex].text;
+                    showResult(`
+                        <strong>Account created successfully!</strong><br>
+                        <strong>Account ID:</strong> ${newAccountId}<br>
+                        <strong>Name:</strong> ${accountName}<br>
+                        <strong>Status:</strong> ${selectedStatus} (${statusId})<br>
+                        <strong>Account Manager:</strong> ${selectedEmployee} (${accountManagerId})
+                    `, true);
+                    
+                    // Reset form
+                    accountForm.reset();
+                } else {
+                    const errorText = await response.text();
+                    showResult(`
+                        <strong>Error creating account:</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        ${errorText ? `Details: ${errorText}` : ''}
+                    `, false);
+                }
+            } catch (error) {
+                showResult(`
+                    <strong>Network error:</strong><br>
+                    ${error.message}<br><br>
+                    <strong>Troubleshooting:</strong><br>
+                    • Make sure the Account service is running<br>
+                    • Check if the service URL is correct<br>
+                    • Verify CORS settings if running locally
+                `, false);
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+        
+        // Initialize with test data on page load
+        window.addEventListener('load', () => {
+            console.log('Nostify Example - Account Creation Page Loaded');
+            console.log('Make sure your Account and Employee services are running on the configured URLs');
+            
+            // Automatically load account statuses and employees on page load
+            loadAccountStatuses();
+            loadEmployees();
+        });
+        
+        // Close modals when clicking outside of them
+        window.addEventListener('click', (event) => {
+            if (event.target === editStatusModal) {
+                closeEditStatusModal();
+            }
+            if (event.target === createStatusModal) {
+                closeCreateStatusModal();
+            }
+            if (event.target === deleteStatusModal) {
+                closeDeleteStatusModal();
+            }
+            if (event.target === editEmployeeModal) {
+                closeEditEmployeeModal();
+            }
+            if (event.target === createEmployeeModal) {
+                closeCreateEmployeeModal();
+            }
+            if (event.target === deleteEmployeeModal) {
+                closeDeleteEmployeeModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,3 +1,6 @@
 
-/*/bin/*
-/*/obj/*
+bin/
+obj/
+*_blobstorage_*
+__azurite_db_blob__.json
+__azurite_db_blob_extent__.json

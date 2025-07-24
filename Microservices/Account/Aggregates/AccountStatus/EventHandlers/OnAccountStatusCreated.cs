@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Microsoft.Azure.Functions.Worker;
 using Newtonsoft.Json.Linq;
 
-namespace Account_Service_Service;
+namespace Account_Service;
 
 public class OnAccountStatusCreated
 {

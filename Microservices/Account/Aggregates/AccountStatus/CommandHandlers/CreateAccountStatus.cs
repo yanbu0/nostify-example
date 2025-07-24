@@ -8,7 +8,7 @@ using nostify;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker;
 
-namespace Account_Service_Service;
+namespace Account_Service;
 
 public class CreateAccountStatus
 {

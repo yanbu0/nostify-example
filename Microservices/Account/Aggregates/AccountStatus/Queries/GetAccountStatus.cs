@@ -5,7 +5,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 
-namespace Account_Service_Service;
+namespace Account_Service;
 
 public class GetAccountStatus
 {

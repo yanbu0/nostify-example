@@ -4,7 +4,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using nostify;
 
-namespace Account_Service_Service;
+namespace Account_Service;
 
 public class AccountStatusCurrentStateInit
 {

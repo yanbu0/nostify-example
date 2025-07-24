@@ -4,7 +4,7 @@ using Xunit;
 using nostify;
 using Microsoft.Azure.Functions.Worker.Http;
 
-namespace Account_Service_Service.Tests;
+namespace Account_Service.Tests;
 
 public class Delete_AccountStatus_Command_Should
 {

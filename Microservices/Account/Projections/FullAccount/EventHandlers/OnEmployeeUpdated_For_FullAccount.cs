@@ -45,10 +45,11 @@ public class OnEmployeeUpdated_For_FullAccount
                 var projectionsToUpdate = await bulkProjectionContainer
                     .GetItemLinqQueryable<FullAccount>()
                     .Where(p => p.accountManagerId == newEvent.aggregateRootId)
+                    .Select(p => p.id)
                     .ReadAllAsync();
 
                 // Use MultiApplyAndPersistAsync to update all projections
-                await bulkProjectionContainer.MultiApplyAndPersistAsync<FullAccount>(allProjections, newEvent);
+                await _nostify.MultiApplyAndPersistAsync<FullAccount>(bulkProjectionContainer, newEvent, projectionsToUpdate);
             }                       
         }
         catch (Exception e)

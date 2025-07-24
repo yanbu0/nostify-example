@@ -4,7 +4,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Newtonsoft.Json;
 
-namespace Account_Service_Service;
+namespace Account_Service;
 
 public class UpdateAccountStatus
 {
