@@ -24,7 +24,7 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
     public string statusName { get; set; }
     public string accountManagerName { get; set; }
 
-    public override void Apply(Event eventToApply)
+    public override void Apply(IEvent eventToApply)
     {
         // Handle Account events
         if (eventToApply.command.name.Equals("Create_Account") 

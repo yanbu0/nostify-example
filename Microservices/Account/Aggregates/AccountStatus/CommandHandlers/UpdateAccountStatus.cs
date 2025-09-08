@@ -24,7 +24,7 @@ public class UpdateAccountStatus
     {
         dynamic updateAccountStatus = await req.Body.ReadFromRequestBodyAsync();
         Guid aggRootId = Guid.Parse(updateAccountStatus.id.ToString());
-        Event pe = new Event(AccountStatusCommand.Update, aggRootId, updateAccountStatus);
+        IEvent pe = new EventFactory().Create<AccountStatus>(AccountStatusCommand.Update, aggRootId, updateAccountStatus);
         await _nostify.PersistEventAsync(pe);
 
         return updateAccountStatus.id;

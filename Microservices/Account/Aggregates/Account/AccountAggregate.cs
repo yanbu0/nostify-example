@@ -14,7 +14,7 @@ public class Account : AccountBaseClass, IAggregate
     public static string aggregateType => "Account";
     public static string currentStateContainerName => $"{aggregateType}CurrentState";
 
-    public override void Apply(Event eventToApply)
+    public override void Apply(IEvent eventToApply)
     {
         if (eventToApply.command == AccountCommand.Create || eventToApply.command == AccountCommand.BulkCreate || eventToApply.command == AccountCommand.Update)
         {

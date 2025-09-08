@@ -25,7 +25,7 @@ public class UpdateEmployee
     {
         dynamic updateEmployee = await req.Body.ReadFromRequestBodyAsync();
         Guid aggRootId = Guid.Parse(updateEmployee.id.ToString());
-        Event pe = new Event(EmployeeCommand.Update, aggRootId, updateEmployee);
+        IEvent pe = new EventFactory().Create<Employee>(EmployeeCommand.Update, aggRootId, updateEmployee);
         await _nostify.PersistEventAsync(pe);
 
         return updateEmployee.id;

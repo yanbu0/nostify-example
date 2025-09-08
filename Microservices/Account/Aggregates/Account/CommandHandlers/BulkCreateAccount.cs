@@ -27,7 +27,7 @@ public class BulkCreateAccount
         ILogger log)
     {
         List<dynamic> newAccountList = JsonConvert.DeserializeObject<List<dynamic>>(await new StreamReader(req.Body).ReadToEndAsync()) ?? new List<dynamic>();
-        List<Event> peList = new List<Event>();
+        List<IEvent> peList = new List<IEvent>();
 
         newAccountList.ForEach(e =>
         {
@@ -35,7 +35,7 @@ public class BulkCreateAccount
             Guid newId = Guid.NewGuid();
             e.id = newId;
             
-            Event pe = new Event(AccountCommand.BulkCreate, newId, e, Guid.Empty, Guid.Empty); //Empty guids should be replaced with user id and tenant id respectively
+            IEvent pe = new EventFactory().Create<Account>(AccountCommand.BulkCreate, newId, e, Guid.Empty, Guid.Empty); //Empty guids should be replaced with user id and tenant id respectively
             peList.Add(pe);
         });
 

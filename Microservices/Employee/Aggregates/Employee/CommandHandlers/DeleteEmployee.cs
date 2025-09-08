@@ -23,7 +23,7 @@ public class DeleteEmployee
         Guid aggregateId,
         ILogger log)
     {
-        Event pe = new Event(EmployeeCommand.Delete, aggregateId, null);
+        IEvent pe = new EventFactory().CreateNullPayloadEvent(EmployeeCommand.Delete, aggregateId);
         await _nostify.PersistEventAsync(pe);
 
         return aggregateId;
