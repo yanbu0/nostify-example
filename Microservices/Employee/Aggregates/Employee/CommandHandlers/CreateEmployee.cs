@@ -32,7 +32,7 @@ public class CreateEmployee
         Guid newId = Guid.NewGuid();
         newEmployee.id = newId;
         
-        Event pe = new Event(EmployeeCommand.Create, newId, newEmployee);
+        IEvent pe = new EventFactory().Create<Employee>(EmployeeCommand.Create, newId, newEmployee);
         await _nostify.PersistEventAsync(pe);
 
         return newId;

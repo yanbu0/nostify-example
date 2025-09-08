@@ -14,7 +14,7 @@ public class Employee : EmployeeBaseClass, IAggregate
     public static string aggregateType => "Employee";
     public static string currentStateContainerName => $"{aggregateType}CurrentState";
 
-    public override void Apply(Event eventToApply)
+    public override void Apply(IEvent eventToApply)
     {
         if (eventToApply.command == EmployeeCommand.Create || eventToApply.command == EmployeeCommand.BulkCreate || eventToApply.command == EmployeeCommand.Update)
         {

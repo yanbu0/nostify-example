@@ -23,7 +23,7 @@ public class DeleteAccountStatus
         Guid aggregateId,
         ILogger log)
     {
-        Event pe = new Event(AccountStatusCommand.Delete, aggregateId, new { id = aggregateId });
+        IEvent pe = new EventFactory().Create<AccountStatus>(AccountStatusCommand.Delete, aggregateId, new { id = aggregateId });
         await _nostify.PersistEventAsync(pe);
 
         return aggregateId;

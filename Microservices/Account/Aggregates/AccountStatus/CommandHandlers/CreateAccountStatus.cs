@@ -32,7 +32,7 @@ public class CreateAccountStatus
         Guid newId = Guid.NewGuid();
         newAccountStatus.id = newId;
         
-        Event pe = new Event(AccountStatusCommand.Create, newId, newAccountStatus);
+        IEvent pe = new EventFactory().Create<AccountStatus>(AccountStatusCommand.Create, newId, newAccountStatus);
         await _nostify.PersistEventAsync(pe);
 
         return newId;
