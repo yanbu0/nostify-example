@@ -1,4 +1,4 @@
-# Nostify Example
+# Nostify Example (This is super out of date, updates coming soon but look at the examples in the main repo README for now)
 
 ## About This Example
 
