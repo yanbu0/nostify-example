@@ -1,4 +1,4 @@
-# Nostify Example (This is super out of date, updates coming soon but look at the examples in the main repo README for now)
+# Nostify Example
 
 ## About This Example
 
@@ -22,13 +22,20 @@ Both services follow Domain-Driven Design (DDD) principles with:
 - Value objects and domain events
 - Azure Functions hosting
 
-## Version 3.8.0 Update
+## Version 4.1.0 Update
 
-This example has been updated to version 3.8.0. The updates include:
+This example has been updated to version 4.1.0. The major updates include:
 
-- **EventFactory Pattern**: All direct Event instantiation has been replaced with the new EventFactory pattern for better abstraction and validation
-- **IEvent Interface**: Apply methods now use IEvent interface instead of concrete Event class
-- **Enhanced Validation**: EventFactory provides built-in payload validation with RequiredFor attributes
-- **Null Payload Events**: Delete operations now use CreateNullPayloadEvent() method for cleaner implementation
+- **Upgraded to .NET 10.0**: All projects now target .NET 10 for improved performance and access to the latest framework features
+- **Updated Dependencies**: All package dependencies have been updated to be compatible with nostify 4.1.0
+- **ExternalDataEventFactory Pattern**: The FullAccount projection now uses the recommended ExternalDataEventFactory fluent builder pattern for gathering external data events, providing cleaner and more maintainable code
+- **Modern Patterns**: All code follows the latest recommended patterns from nostify 4.1.0
 
-Stay tuned for additional features and improvements.
+For detailed information about nostify 4.1.0 features, including:
+- Sequential Number Generation
+- Enhanced Testability with IQueryExecutor
+- Default Command and Event Handlers
+- Event Hubs Support
+- And more
+
+Please refer to the [main nostify repository README](https://github.com/yanbu0/nostify).
