@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Microservices/">
+    <Project Path="Microservices\Account\Account_Service.csproj" />
+    <Project Path="Microservices\Employee\Employee_Service.csproj" />
+  </Folder>
+  <Properties Name="Configuration">
+    <Property Name="Debug|Any CPU" />
+    <Property Name="Release|Any CPU" />
+  </Properties>
+</Solution>

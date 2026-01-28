@@ -61,24 +61,14 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
 
     public async static Task<List<ExternalDataEvent>> GetExternalDataEventsAsync(List<FullAccount> projectionsToInit, INostify nostify, HttpClient? httpClient = null, DateTime? pointInTime = null)
     {
-        // RECOMMENDED: Use ExternalDataEventFactory for cleaner, more maintainable code
-        var factory = new ExternalDataEventFactory<FullAccount>(
-            nostify,
-            projectionsToInit,
-            httpClient,
-            pointInTime);
+        // RECOMMENDED: Use ExternalDataEventFactory fluent API for cleaner, more maintainable code
+        var events = await new ExternalDataEventFactory<FullAccount>(nostify, projectionsToInit, httpClient, pointInTime)
+            // Get events from same service for statusId (nullable selector example)
+            .WithSameServiceIdSelectors(p => p.statusId)
+            // Get events from external Employee service for accountManagerId (nullable selector example)
+            .WithEventRequestor("http://localhost:7072/api/EventRequest", p => p.accountManagerId)
+            .GetEventsAsync();
 
-        // Get events from same service for statusId
-        factory.WithSameServiceIdSelectors(p => p.statusId);
-
-        // Get events from external Employee service for accountManagerId (if httpClient provided)
-        if (httpClient != null)
-        {
-            factory.WithEventRequestor(
-                "http://localhost:7072/api/EventRequest", 
-                p => p.accountManagerId);
-        }
-
-        return await factory.GetEventsAsync();
+        return events;
     }
 }
