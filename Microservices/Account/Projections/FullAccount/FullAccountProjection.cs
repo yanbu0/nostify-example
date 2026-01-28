@@ -69,7 +69,7 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
         // Get events from external Employee service for accountManagerId (nullable selector example)
         if (httpClient != null)
         {
-            factory.WithEventRequestor("http://localhost:7072/api/EventRequest", p => p.accountManagerId);
+            factory = factory.WithEventRequestor("http://localhost:7072/api/EventRequest", p => p.accountManagerId);
         }
 
         return await factory.GetEventsAsync();
