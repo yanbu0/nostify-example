@@ -9,7 +9,7 @@ var securityMode = builder.Configuration["Security:Mode"] ?? "None";
 
 builder.Services.AddGrpc(options =>
 {
-    if (securityMode.Equals("apikey", StringComparison.OrdinalIgnoreCase))
+    if (securityMode.Equals("ApiKey", StringComparison.OrdinalIgnoreCase))
     {
         options.Interceptors.Add<ApiKeyInterceptor>();
     }
