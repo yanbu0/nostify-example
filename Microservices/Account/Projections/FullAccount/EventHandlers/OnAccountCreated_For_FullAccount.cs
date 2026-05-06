@@ -11,11 +11,13 @@ public class OnAccountCreated_For_FullAccount
 {
     private readonly INostify _nostify;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<OnAccountCreated_For_FullAccount> _logger;
     
-    public OnAccountCreated_For_FullAccount(INostify nostify, HttpClient httpClient)
+    public OnAccountCreated_For_FullAccount(INostify nostify, HttpClient httpClient, ILogger<OnAccountCreated_For_FullAccount> logger)
     {
         this._nostify = nostify;
         _httpClient = httpClient;
+        this._logger = logger;
     }
 
     [Function(nameof(OnAccountCreated_For_FullAccount))]
@@ -30,28 +32,9 @@ public class OnAccountCreated_For_FullAccount
                 Protocol =  BrokerProtocol.SaslSsl,
                 AuthenticationMode = BrokerAuthenticationMode.Plain,
                 #endif
-                ConsumerGroup = "FullAccount")] NostifyKafkaTriggerEvent triggerEvent,
-        ILogger log)
+                ConsumerGroup = "FullAccount")] NostifyKafkaTriggerEvent triggerEvent)
     {
-        Event? newEvent = triggerEvent.GetEvent();
-        try
-        {
-            if (newEvent != null)
-            {
-                //Get projection container
-                Container projectionContainer = await _nostify.GetProjectionContainerAsync<FullAccount>();
-                //Update projection container
-                var newProj = await projectionContainer.ApplyAndPersistAsync<FullAccount>(newEvent);
-                //Initialize projection with external data
-                await newProj.InitAsync(_nostify, _httpClient);
-            }                           
-        }
-        catch (Exception e)
-        {
-            await _nostify.HandleUndeliverableAsync(nameof(OnAccountCreated_For_FullAccount), e.Message, newEvent);
-        }
-
-        
+        await DefaultEventHandlers.HandleProjectionEventAsync<FullAccount>(_nostify, triggerEvent, _httpClient);
     }
     
 }

@@ -12,21 +12,23 @@ public class GetAllEmployees
 
     private readonly HttpClient _client;
     private readonly INostify _nostify;
-    public GetAllEmployees(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<GetAllEmployees> _logger;
+    public GetAllEmployees(HttpClient httpClient, INostify nostify, ILogger<GetAllEmployees> logger)
     {
         this._client = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(GetAllEmployees))]
     public async Task<List<Employee>> Run(
         [HttpTrigger("get", Route = "Employee")] HttpRequestData req,
-        FunctionContext context,
-        ILogger log)
+        FunctionContext context)
     {
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
         Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync<Employee>();
         List<Employee> allList = await currentStateContainer
-                            .GetItemLinqQueryable<Employee>()
+                            .FilteredQuery<Employee>(tenantId)
                             .ReadAllAsync();
 
 

@@ -15,33 +15,23 @@ public class BulkCreateAccount
 
     private readonly HttpClient _httpClient;
     private readonly INostify _nostify;
-    public BulkCreateAccount(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<BulkCreateAccount> _logger;
+    public BulkCreateAccount(HttpClient httpClient, INostify nostify, ILogger<BulkCreateAccount> logger)
     {
         this._httpClient = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(BulkCreateAccount))]
     public async Task<int> Run(
         [HttpTrigger("post", Route = "Account/BulkCreate")] HttpRequestData req,
-        ILogger log)
+        FunctionContext context)
     {
-        List<dynamic> newAccountList = JsonConvert.DeserializeObject<List<dynamic>>(await new StreamReader(req.Body).ReadToEndAsync()) ?? new List<dynamic>();
-        List<IEvent> peList = new List<IEvent>();
+        Guid userId = Guid.Empty; // You can replace this with actual user ID retrieval logic
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
 
-        newAccountList.ForEach(e =>
-        {
-            //Need new id for aggregate root since its new
-            Guid newId = Guid.NewGuid();
-            e.id = newId;
-            
-            IEvent pe = new EventFactory().Create<Account>(AccountCommand.BulkCreate, newId, e, Guid.Empty, Guid.Empty); //Empty guids should be replaced with user id and tenant id respectively
-            peList.Add(pe);
-        });
-
-        await _nostify.BulkPersistEventAsync(peList);
-
-        return newAccountList.Count;
+        return await DefaultCommandHandler.HandleBulkCreateAsync<Account>(_nostify, AccountCommand.BulkCreate, req, userId, tenantId);
     }
 }
 

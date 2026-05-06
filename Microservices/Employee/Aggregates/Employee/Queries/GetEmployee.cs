@@ -12,24 +12,24 @@ public class GetEmployee
 
     private readonly HttpClient _client;
     private readonly INostify _nostify;
-    public GetEmployee(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<GetEmployee> _logger;
+    public GetEmployee(HttpClient httpClient, INostify nostify, ILogger<GetEmployee> logger)
     {
         this._client = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(GetEmployee))]
     public async Task<Employee> Run(
         [HttpTrigger("get", Route = "Employee/{aggregateId:guid}")] HttpRequestData req,
         FunctionContext context,
-        Guid aggregateId,
-        ILogger log)
+        Guid aggregateId)
     {
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
         Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync<Employee>();
         Employee retObj = await currentStateContainer
-                            .GetItemLinqQueryable<Employee>()
-                            .Where(x => x.id == aggregateId)
-                            .FirstOrDefaultAsync();
+                            .ReadItemAsync<Employee>(aggregateId.ToString(), new PartitionKey(tenantId.ToString()));
                             
         return retObj;
     }

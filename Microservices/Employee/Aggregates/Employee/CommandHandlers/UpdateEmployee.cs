@@ -12,23 +12,23 @@ public class UpdateEmployee
 
     private readonly HttpClient _httpClient;
     private readonly INostify _nostify;
-    public UpdateEmployee(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<UpdateEmployee> _logger;
+    public UpdateEmployee(HttpClient httpClient, INostify nostify, ILogger<UpdateEmployee> logger)
     {
         this._httpClient = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(UpdateEmployee))]
     public async Task<Guid> Run(
-        [HttpTrigger("patch", Route = "Employee")] HttpRequestData req,
-        ILogger log)
+        [HttpTrigger("patch", Route = "Employee/{id:guid?}")] HttpRequestData req,
+        FunctionContext context,
+        Guid? id)
     {
-        dynamic updateEmployee = await req.Body.ReadFromRequestBodyAsync();
-        Guid aggRootId = Guid.Parse(updateEmployee.id.ToString());
-        IEvent pe = new EventFactory().Create<Employee>(EmployeeCommand.Update, aggRootId, updateEmployee);
-        await _nostify.PersistEventAsync(pe);
-
-        return updateEmployee.id;
+        Guid userId = Guid.Empty; // You can replace this with actual user ID retrieval logic
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
+        return await DefaultCommandHandler.HandlePatchAsync<Employee>(_nostify, EmployeeCommand.Update, req, context, userId, tenantId);
     }
 }
 

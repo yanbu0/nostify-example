@@ -11,11 +11,13 @@ public class OnAccountBulkCreated_For_FullAccount
 {
     private readonly INostify _nostify;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<OnAccountBulkCreated_For_FullAccount> _logger;
     
-    public OnAccountBulkCreated_For_FullAccount(INostify nostify, HttpClient httpClient)
+    public OnAccountBulkCreated_For_FullAccount(INostify nostify, HttpClient httpClient, ILogger<OnAccountBulkCreated_For_FullAccount> logger)
     {
         this._nostify = nostify;
         _httpClient = httpClient;
+        this._logger = logger;
     }
 
     [Function(nameof(OnAccountBulkCreated_For_FullAccount))]
@@ -31,25 +33,10 @@ public class OnAccountBulkCreated_For_FullAccount
                 Protocol =  BrokerProtocol.SaslSsl,
                 AuthenticationMode = BrokerAuthenticationMode.Plain,
                 #endif
-                IsBatched = true)] string[] events,
-        ILogger log)
+                IsBatched = true)] string[] events)
     {
-        try
-        {
-            Container currentStateContainer = await _nostify.GetBulkProjectionContainerAsync<FullAccount>();
-            await currentStateContainer.BulkCreateFromKafkaTriggerEventsAsync<FullAccount>(events);
-            await _nostify.InitAllUninitializedAsync<FullAccount>();
-        }
-        catch (Exception e)
-        {
-            events.ToList().ForEach(async eventStr =>
-            {
-                Event @event = JsonConvert.DeserializeObject<NostifyKafkaTriggerEvent>(eventStr)?.GetEvent() ?? throw new NostifyException("Event is null");
-                await _nostify.HandleUndeliverableAsync(nameof(OnAccountBulkCreated_For_FullAccount), e.Message, @event);
-            });
-        }
-
-        
+        int createdCount = await DefaultEventHandlers.HandleProjectionBulkCreateEventAsync<FullAccount>(_nostify, events);
+        _logger.LogInformation("{Handler} processed {Count} records", nameof(OnAccountBulkCreated_For_FullAccount), createdCount);
     }
     
 }

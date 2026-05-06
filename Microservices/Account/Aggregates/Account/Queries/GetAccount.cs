@@ -12,24 +12,24 @@ public class GetAccount
 
     private readonly HttpClient _client;
     private readonly INostify _nostify;
-    public GetAccount(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<GetAccount> _logger;
+    public GetAccount(HttpClient httpClient, INostify nostify, ILogger<GetAccount> logger)
     {
         this._client = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(GetAccount))]
     public async Task<Account> Run(
         [HttpTrigger("get", Route = "Account/{aggregateId:guid}")] HttpRequestData req,
         FunctionContext context,
-        Guid aggregateId,
-        ILogger log)
+        Guid aggregateId)
     {
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
         Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync<Account>();
         Account retObj = await currentStateContainer
-                            .GetItemLinqQueryable<Account>()
-                            .Where(x => x.id == aggregateId)
-                            .FirstOrDefaultAsync();
+                            .ReadItemAsync<Account>(aggregateId.ToString(), new PartitionKey(tenantId.ToString()));
                             
         return retObj;
     }

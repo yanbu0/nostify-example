@@ -3,6 +3,9 @@
     <Project Path="Microservices\Account\Account_Service.csproj" />
     <Project Path="Microservices\Employee\Employee_Service.csproj" />
   </Folder>
+  <Folder Name="/GrpcEventRequestServer/">
+    <Project Path="GrpcEventRequestServer\GrpcEventRequestServer.csproj" />
+  </Folder>
   <Properties Name="Configuration">
     <Property Name="Debug|Any CPU" />
     <Property Name="Release|Any CPU" />

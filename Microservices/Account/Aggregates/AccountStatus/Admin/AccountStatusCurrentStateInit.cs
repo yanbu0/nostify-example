@@ -11,16 +11,17 @@ public class AccountStatusCurrentStateInit
 
     private readonly HttpClient _httpClient;
     private readonly INostify _nostify;
-    public AccountStatusCurrentStateInit(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<AccountStatusCurrentStateInit> _logger;
+    public AccountStatusCurrentStateInit(HttpClient httpClient, INostify nostify, ILogger<AccountStatusCurrentStateInit> logger)
     {
         this._httpClient = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(AccountStatusCurrentStateInit))]
     public async Task<IActionResult> Run(
-        [HttpTrigger("post", Route = "AccountStatusCurrentStateInit")] HttpRequestData req,
-        ILogger log)
+        [HttpTrigger("post", Route = "AccountStatusCurrentStateInit")] HttpRequestData req)
     {
         await _nostify.RebuildCurrentStateContainerAsync<AccountStatus>();
         return new OkResult();

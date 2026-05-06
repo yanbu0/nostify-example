@@ -12,21 +12,23 @@ public class GetAllAccountStatuss
 
     private readonly HttpClient _client;
     private readonly INostify _nostify;
-    public GetAllAccountStatuss(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<GetAllAccountStatuss> _logger;
+    public GetAllAccountStatuss(HttpClient httpClient, INostify nostify, ILogger<GetAllAccountStatuss> logger)
     {
         this._client = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(GetAllAccountStatuss))]
     public async Task<List<AccountStatus>> Run(
         [HttpTrigger("get", Route = "AccountStatus")] HttpRequestData req,
-        FunctionContext context,
-        ILogger log)
+        FunctionContext context)
     {
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
         Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync<AccountStatus>();
         List<AccountStatus> allList = await currentStateContainer
-                            .GetItemLinqQueryable<AccountStatus>()
+                            .FilteredQuery<AccountStatus>(tenantId)
                             .ReadAllAsync();
 
 

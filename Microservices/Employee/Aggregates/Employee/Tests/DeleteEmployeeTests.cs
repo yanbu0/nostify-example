@@ -7,6 +7,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.Functions.Worker;
 
 namespace Employee_Service.Tests;
 
@@ -15,14 +16,16 @@ public class Delete_Employee_Command_Should
     private Mock<INostify> _nostifyMock;
     private DeleteEmployee _func;
     private Mock<HttpClient> _httpClientMock;
-    private Mock<ILogger> _loggerMock;
+    private Mock<ILogger<DeleteEmployee>> _loggerMock;
+    private Mock<FunctionContext> _functionContextMock;
 
     public Delete_Employee_Command_Should()
     {
         _nostifyMock = new Mock<INostify>();
         _httpClientMock = new Mock<HttpClient>();
-        _func = new DeleteEmployee(_httpClientMock.Object, _nostifyMock.Object);
-        _loggerMock = new Mock<ILogger>();
+        _loggerMock = new Mock<ILogger<DeleteEmployee>>();
+        _func = new DeleteEmployee(_httpClientMock.Object, _nostifyMock.Object, _loggerMock.Object);
+        _functionContextMock = new Mock<FunctionContext>();
     }
 
     [Fact]
@@ -34,7 +37,7 @@ public class Delete_Employee_Command_Should
         Guid newId = Guid.NewGuid();
 
         // Act
-        var resp = await _func.Run(testReq, newId, _loggerMock.Object);
+        var resp = await _func.Run(testReq, _functionContextMock.Object, newId);
 
         // Assert
         Assert.True(newId == resp);

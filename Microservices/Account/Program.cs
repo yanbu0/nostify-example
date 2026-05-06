@@ -3,11 +3,10 @@ using Microsoft.Extensions.Hosting;
 using nostify;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Azure.Functions.Worker;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Azure.Core.Serialization;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Account_Service;
 
@@ -23,6 +22,11 @@ public class Program
         .ConfigureServices((context, services) =>
         {
             services.AddHttpClient();
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddConsole(); // Explicitly add the console logger, update this if needed
+                loggingBuilder.SetMinimumLevel(LogLevel.Debug); // Set the minimum log level to Debug if you want to see detailed logs from Nostify
+            });
 
             var config = context.Configuration;
 
@@ -35,6 +39,7 @@ public class Program
             int defaultThroughput = config.GetValue<int>("DefaultContainerThroughput");
             bool verboseNostifyBuild = config.GetValue<bool>("VerboseNostifyBuild");
             var httpClientFactory = services.BuildServiceProvider().GetRequiredService<IHttpClientFactory>();
+            var logger = services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger("nostify");
 
             var nostify = NostifyFactory.WithCosmos(
                                 cosmosApiKey: apiKey,
@@ -45,6 +50,7 @@ public class Program
                                 useGatewayConnection: false)
                             .WithKafka(kafka)
                             .WithHttp(httpClientFactory)
+                            .WithLogger(logger)
                             .Build<Account>(verbose: true);
 
             services.AddSingleton<INostify>(nostify);
@@ -73,11 +79,7 @@ internal static class WorkerConfigurationExtensions
     {
         builder.Services.Configure<WorkerOptions>(workerOptions =>
         {
-            var settings = NewtonsoftJsonObjectSerializer.CreateJsonSerializerSettings();
-            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            settings.NullValueHandling = NullValueHandling.Ignore;
-
-            workerOptions.Serializer = new NewtonsoftJsonObjectSerializer(settings);
+            workerOptions.Serializer = new NewtonsoftJsonObjectSerializer(SerializationSettings.NostifyDefault);
         });
 
         return builder;

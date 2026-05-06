@@ -10,10 +10,12 @@ namespace Account_Service;
 public class OnAccountUpdated
 {
     private readonly INostify _nostify;
+    private readonly ILogger<OnAccountUpdated> _logger;
 
-    public OnAccountUpdated(INostify nostify)
+    public OnAccountUpdated(INostify nostify, ILogger<OnAccountUpdated> logger)
     {
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(OnAccountUpdated))]
@@ -28,26 +30,9 @@ public class OnAccountUpdated
                 Protocol =  BrokerProtocol.SaslSsl,
                 AuthenticationMode = BrokerAuthenticationMode.Plain,
                 #endif
-                ConsumerGroup = "Account")] NostifyKafkaTriggerEvent triggerEvent,
-        ILogger log)
+                ConsumerGroup = "Account")] NostifyKafkaTriggerEvent triggerEvent)
     {
-        Event? newEvent = triggerEvent.GetEvent();
-        try
-        {
-            if (newEvent != null)
-            {
-                //Update aggregate current state projection
-                Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync<Account>();
-                await currentStateContainer.ApplyAndPersistAsync<Account>(newEvent);
-            }                       
-
-        }
-        catch (Exception e)
-        {
-            await _nostify.HandleUndeliverableAsync(nameof(OnAccountUpdated), e.Message, newEvent);
-        }
-
-        
+        await DefaultEventHandlers.HandleAggregateEventAsync<Account>(_nostify, triggerEvent);
     }
     
 }
