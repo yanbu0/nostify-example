@@ -10,10 +10,12 @@ namespace Employee_Service;
 public class OnEmployeeCreated
 {
     private readonly INostify _nostify;
+    private readonly ILogger<OnEmployeeCreated> _logger;
     
-    public OnEmployeeCreated(INostify nostify)
+    public OnEmployeeCreated(INostify nostify, ILogger<OnEmployeeCreated> logger)
     {
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(OnEmployeeCreated))]
@@ -28,25 +30,9 @@ public class OnEmployeeCreated
                 Protocol =  BrokerProtocol.SaslSsl,
                 AuthenticationMode = BrokerAuthenticationMode.Plain,
                 #endif
-                ConsumerGroup = "Employee")] NostifyKafkaTriggerEvent triggerEvent,
-        ILogger log)
+                ConsumerGroup = "Employee")] NostifyKafkaTriggerEvent triggerEvent)
     {
-        Event? newEvent = triggerEvent.GetEvent();
-        try
-        {
-            if (newEvent != null)
-            {
-                //Update aggregate current state projection
-                Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync<Employee>();
-                await currentStateContainer.ApplyAndPersistAsync<Employee>(newEvent);
-            }                           
-        }
-        catch (Exception e)
-        {
-            await _nostify.HandleUndeliverableAsync(nameof(OnEmployeeCreated), e.Message, newEvent);
-        }
-
-        
+        await DefaultEventHandlers.HandleAggregateEventAsync<Employee>(_nostify, triggerEvent);
     }
     
 }

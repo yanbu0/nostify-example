@@ -15,27 +15,22 @@ public class CreateAccountStatus
 
     private readonly HttpClient _httpClient;
     private readonly INostify _nostify;
-    public CreateAccountStatus(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<CreateAccountStatus> _logger;
+    public CreateAccountStatus(HttpClient httpClient, INostify nostify, ILogger<CreateAccountStatus> logger)
     {
         this._httpClient = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(CreateAccountStatus))]
     public async Task<Guid> Run(
         [HttpTrigger("post", Route = "AccountStatus")] HttpRequestData req,
-        ILogger log)
+        FunctionContext context)
     {
-        dynamic newAccountStatus = await req.Body.ReadFromRequestBodyAsync(true);
-
-        //Need new id for aggregate root since its new
-        Guid newId = Guid.NewGuid();
-        newAccountStatus.id = newId;
-        
-        IEvent pe = new EventFactory().Create<AccountStatus>(AccountStatusCommand.Create, newId, newAccountStatus);
-        await _nostify.PersistEventAsync(pe);
-
-        return newId;
+        Guid userId = Guid.Empty; // You can replace this with actual user ID retrieval logic
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
+        return await DefaultCommandHandler.HandlePostAsync<AccountStatus>(_nostify, AccountStatusCommand.Create, req, userId, tenantId);
     }
 }
 

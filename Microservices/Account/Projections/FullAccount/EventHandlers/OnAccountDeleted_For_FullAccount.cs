@@ -10,11 +10,12 @@ namespace Account_Service;
 public class OnAccountDeleted_For_FullAccount
 {
     private readonly INostify _nostify;
+    private readonly ILogger<OnAccountDeleted_For_FullAccount> _logger;
     
-    
-    public OnAccountDeleted_For_FullAccount(INostify nostify)
+    public OnAccountDeleted_For_FullAccount(INostify nostify, ILogger<OnAccountDeleted_For_FullAccount> logger)
     {
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(OnAccountDeleted_For_FullAccount))]
@@ -29,27 +30,9 @@ public class OnAccountDeleted_For_FullAccount
                 Protocol =  BrokerProtocol.SaslSsl,
                 AuthenticationMode = BrokerAuthenticationMode.Plain,
                 #endif
-                ConsumerGroup = "FullAccount")] NostifyKafkaTriggerEvent triggerEvent,
-        ILogger log)
+                ConsumerGroup = "FullAccount")] NostifyKafkaTriggerEvent triggerEvent)
     {
-        Event? newEvent = triggerEvent.GetEvent();
-        try
-        {
-            if (newEvent != null)
-            {
-                //Update projection container
-                Container projectionContainer = await _nostify.GetProjectionContainerAsync<FullAccount>();
-                //Remove from the container.  If you wish to set isDeleted instead, remove the code below and ApplyAndPersist the Event
-                await projectionContainer.DeleteItemAsync<FullAccount>(newEvent.id);
-            }
-        }
-        catch (Exception e)
-        {
-            await _nostify.HandleUndeliverableAsync(nameof(OnAccountDeleted_For_FullAccount), e.Message, newEvent);
-        }
-
-        
-        
+        await DefaultEventHandlers.HandleProjectionEventAsync<FullAccount>(_nostify, triggerEvent, null);
     }
 }
 

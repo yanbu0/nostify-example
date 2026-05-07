@@ -11,22 +11,23 @@ public class DeleteAccount
 
     private readonly HttpClient _httpClient;
     private readonly INostify _nostify;
-    public DeleteAccount(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<DeleteAccount> _logger;
+    public DeleteAccount(HttpClient httpClient, INostify nostify, ILogger<DeleteAccount> logger)
     {
         this._httpClient = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(DeleteAccount))]
     public async Task<Guid> Run(
         [HttpTrigger("delete", Route = "Account/{aggregateId:guid}")] HttpRequestData req,
-        Guid aggregateId,
-        ILogger log)
+        FunctionContext context,
+        Guid aggregateId)
     {
-        IEvent pe = new EventFactory().CreateNullPayloadEvent(AccountCommand.Delete, aggregateId);
-        await _nostify.PersistEventAsync(pe);
-
-        return aggregateId;
+        Guid userId = Guid.Empty; // You can replace this with actual user ID retrieval logic
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
+        return await DefaultCommandHandler.HandleDeleteAsync<Account>(_nostify, AccountCommand.Delete, aggregateId, userId, tenantId);
     }
 }
 

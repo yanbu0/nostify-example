@@ -11,23 +11,23 @@ public class UpdateAccountStatus
 
     private readonly HttpClient _httpClient;
     private readonly INostify _nostify;
-    public UpdateAccountStatus(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<UpdateAccountStatus> _logger;
+    public UpdateAccountStatus(HttpClient httpClient, INostify nostify, ILogger<UpdateAccountStatus> logger)
     {
         this._httpClient = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(UpdateAccountStatus))]
     public async Task<Guid> Run(
-        [HttpTrigger("patch", Route = "AccountStatus")] HttpRequestData req,
-        ILogger log)
+        [HttpTrigger("patch", Route = "AccountStatus/{id:guid?}")] HttpRequestData req,
+        FunctionContext context,
+        Guid? id)
     {
-        dynamic updateAccountStatus = await req.Body.ReadFromRequestBodyAsync();
-        Guid aggRootId = Guid.Parse(updateAccountStatus.id.ToString());
-        IEvent pe = new EventFactory().Create<AccountStatus>(AccountStatusCommand.Update, aggRootId, updateAccountStatus);
-        await _nostify.PersistEventAsync(pe);
-
-        return updateAccountStatus.id;
+        Guid userId = Guid.Empty; // You can replace this with actual user ID retrieval logic
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
+        return await DefaultCommandHandler.HandlePatchAsync<AccountStatus>(_nostify, AccountStatusCommand.Update, req, context, userId, tenantId);
     }
 }
 

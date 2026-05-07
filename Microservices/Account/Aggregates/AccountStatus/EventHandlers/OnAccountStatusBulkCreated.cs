@@ -10,10 +10,12 @@ namespace Account_Service;
 public class OnAccountStatusBulkCreated
 {
     private readonly INostify _nostify;
+    private readonly ILogger<OnAccountStatusBulkCreated> _logger;
     
-    public OnAccountStatusBulkCreated(INostify nostify)
+    public OnAccountStatusBulkCreated(INostify nostify, ILogger<OnAccountStatusBulkCreated> logger)
     {
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(OnAccountStatusBulkCreated))]
@@ -29,22 +31,10 @@ public class OnAccountStatusBulkCreated
                 Protocol =  BrokerProtocol.SaslSsl,
                 AuthenticationMode = BrokerAuthenticationMode.Plain,
                 #endif
-                IsBatched = true)] string[] events,
-        ILogger log)
+                IsBatched = true)] string[] events)
     {
-        try
-        {
-            Container currentStateContainer = await _nostify.GetBulkCurrentStateContainerAsync<AccountStatus>();
-            await currentStateContainer.BulkCreateFromKafkaTriggerEventsAsync<AccountStatus>(events);                         
-        }
-        catch (Exception e)
-        {
-            events.ToList().ForEach(async eventStr =>
-            {
-                Event @event = JsonConvert.DeserializeObject<NostifyKafkaTriggerEvent>(eventStr)?.GetEvent() ?? throw new NostifyException("Event is null");
-                await _nostify.HandleUndeliverableAsync(nameof(OnAccountStatusBulkCreated), e.Message, @event);
-            });            
-        }        
+        int createdCount = await DefaultEventHandlers.HandleAggregateBulkCreateEventAsync<AccountStatus>(_nostify, events);
+        _logger.LogInformation("{Handler} processed {Count} records", nameof(OnAccountStatusBulkCreated), createdCount);
     }    
 }
 

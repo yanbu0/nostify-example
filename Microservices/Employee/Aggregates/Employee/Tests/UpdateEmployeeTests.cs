@@ -7,7 +7,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Azure.Cosmos.Linq;
+using Microsoft.Azure.Functions.Worker;
 
 namespace Employee_Service.Tests;
 
@@ -16,14 +16,16 @@ public class Update_Employee_Command_Should
     private Mock<INostify> _nostifyMock;
     private UpdateEmployee _func;
     private Mock<HttpClient> _httpClientMock;
-    private Mock<ILogger> _loggerMock;
+    private Mock<ILogger<UpdateEmployee>> _loggerMock;
+    private Mock<FunctionContext> _functionContextMock;
 
     public Update_Employee_Command_Should()
     {
         _nostifyMock = new Mock<INostify>();
         _httpClientMock = new Mock<HttpClient>();
-        _func = new UpdateEmployee(_httpClientMock.Object, _nostifyMock.Object);
-        _loggerMock = new Mock<ILogger>();
+        _loggerMock = new Mock<ILogger<UpdateEmployee>>();
+        _func = new UpdateEmployee(_httpClientMock.Object, _nostifyMock.Object, _loggerMock.Object);
+        _functionContextMock = new Mock<FunctionContext>();
     }
 
     [Fact]
@@ -38,7 +40,7 @@ public class Update_Employee_Command_Should
         HttpRequestData testReq = MockHttpRequestData.Create(updateEmployee);
 
         // Act
-        var resp = await _func.Run(testReq, _loggerMock.Object);
+        var resp = await _func.Run(testReq, _functionContextMock.Object, newId);
 
         // Assert
         Assert.True(newId == resp);

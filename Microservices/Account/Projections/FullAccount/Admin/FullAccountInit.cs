@@ -14,16 +14,17 @@ public class FullAccountInit
 
     private readonly HttpClient _httpClient;
     private readonly INostify _nostify;
-    public FullAccountInit(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<FullAccountInit> _logger;
+    public FullAccountInit(HttpClient httpClient, INostify nostify, ILogger<FullAccountInit> logger)
     {
         this._httpClient = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(FullAccountInit))]
     public async Task<IActionResult> Run(
-        [HttpTrigger("post", Route = "FullAccountInit")] HttpRequestData req,
-        ILogger log)
+        [HttpTrigger("post", Route = "FullAccountInit")] HttpRequestData req)
     {
         await _nostify.InitContainerAsync<FullAccount,Account>();
         return new OkResult();

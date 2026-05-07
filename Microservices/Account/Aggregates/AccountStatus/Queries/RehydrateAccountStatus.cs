@@ -12,18 +12,19 @@ public class RehydrateAccountStatus
 
     private readonly HttpClient _client;
     private readonly INostify _nostify;
-    public RehydrateAccountStatus(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<RehydrateAccountStatus> _logger;
+    public RehydrateAccountStatus(HttpClient httpClient, INostify nostify, ILogger<RehydrateAccountStatus> logger)
     {
         this._client = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(RehydrateAccountStatus))]
     public async Task<AccountStatus> Run(
         [HttpTrigger("get", Route = "RehydrateAccountStatus/{aggregateId:guid}/{datetime:datetime?}")] HttpRequestData req,
         Guid aggregateId,
-        DateTime? dateTime,
-        ILogger log)
+        DateTime? dateTime)
     {
         AccountStatus retObj = await _nostify.RehydrateAsync<AccountStatus>(aggregateId, dateTime);
                             

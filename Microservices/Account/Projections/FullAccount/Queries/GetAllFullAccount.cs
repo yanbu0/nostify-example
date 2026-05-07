@@ -12,21 +12,23 @@ public class GetAllFullAccounts
 
     private readonly HttpClient _client;
     private readonly INostify _nostify;
-    public GetAllFullAccounts(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<GetAllFullAccounts> _logger;
+    public GetAllFullAccounts(HttpClient httpClient, INostify nostify, ILogger<GetAllFullAccounts> logger)
     {
         this._client = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(GetAllFullAccounts))]
     public async Task<List<FullAccount>> Run(
         [HttpTrigger("get", Route = "FullAccount")] HttpRequestData req,
-        FunctionContext context,
-        ILogger log)
+        FunctionContext context)
     {
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
         Container projectionContainer = await _nostify.GetProjectionContainerAsync<FullAccount>();
         List<FullAccount> allList = await projectionContainer
-                            .GetItemLinqQueryable<FullAccount>()
+                            .FilteredQuery<FullAccount>(tenantId)
                             .ReadAllAsync();
 
 

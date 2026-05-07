@@ -10,11 +10,12 @@ namespace Account_Service;
 public class OnAccountDeleted
 {
     private readonly INostify _nostify;
+    private readonly ILogger<OnAccountDeleted> _logger;
     
-    
-    public OnAccountDeleted(INostify nostify)
+    public OnAccountDeleted(INostify nostify, ILogger<OnAccountDeleted> logger)
     {
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(OnAccountDeleted))]
@@ -29,26 +30,9 @@ public class OnAccountDeleted
                 Protocol =  BrokerProtocol.SaslSsl,
                 AuthenticationMode = BrokerAuthenticationMode.Plain,
                 #endif
-                ConsumerGroup = "Account")] NostifyKafkaTriggerEvent triggerEvent,
-        ILogger log)
+                ConsumerGroup = "Account")] NostifyKafkaTriggerEvent triggerEvent)
     {
-        Event? newEvent = triggerEvent.GetEvent();
-        try
-        {
-            if (newEvent != null)
-            {
-                //Update aggregate current state projection
-                Container currentStateContainer = await _nostify.GetCurrentStateContainerAsync<Account>();
-                await currentStateContainer.ApplyAndPersistAsync<Account>(newEvent);
-            }
-        }
-        catch (Exception e)
-        {
-            await _nostify.HandleUndeliverableAsync(nameof(OnAccountDeleted), e.Message, newEvent);
-        }
-
-        
-        
+        await DefaultEventHandlers.HandleAggregateEventAsync<Account>(_nostify, triggerEvent);
     }
 }
 

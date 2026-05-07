@@ -11,11 +11,13 @@ public class OnAccountStatusUpdated_For_FullAccount
 {
     private readonly INostify _nostify;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<OnAccountStatusUpdated_For_FullAccount> _logger;
 
-    public OnAccountStatusUpdated_For_FullAccount(INostify nostify, HttpClient httpClient)
+    public OnAccountStatusUpdated_For_FullAccount(INostify nostify, HttpClient httpClient, ILogger<OnAccountStatusUpdated_For_FullAccount> logger)
     {
         this._nostify = nostify;
         _httpClient = httpClient;
+        this._logger = logger;
     }
 
     [Function(nameof(OnAccountStatusUpdated_For_FullAccount))]
@@ -30,8 +32,7 @@ public class OnAccountStatusUpdated_For_FullAccount
                 Protocol =  BrokerProtocol.SaslSsl,
                 AuthenticationMode = BrokerAuthenticationMode.Plain,
                 #endif
-                ConsumerGroup = "FullAccount")] NostifyKafkaTriggerEvent triggerEvent,
-        ILogger log)
+                ConsumerGroup = "FullAccount")] NostifyKafkaTriggerEvent triggerEvent)
     {
         Event? newEvent = triggerEvent.GetEvent();
         try

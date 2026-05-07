@@ -15,33 +15,23 @@ public class BulkCreateEmployee
 
     private readonly HttpClient _httpClient;
     private readonly INostify _nostify;
-    public BulkCreateEmployee(HttpClient httpClient, INostify nostify)
+    private readonly ILogger<BulkCreateEmployee> _logger;
+    public BulkCreateEmployee(HttpClient httpClient, INostify nostify, ILogger<BulkCreateEmployee> logger)
     {
         this._httpClient = httpClient;
         this._nostify = nostify;
+        this._logger = logger;
     }
 
     [Function(nameof(BulkCreateEmployee))]
     public async Task<int> Run(
         [HttpTrigger("post", Route = "Employee/BulkCreate")] HttpRequestData req,
-        ILogger log)
+        FunctionContext context)
     {
-        List<dynamic> newEmployeeList = JsonConvert.DeserializeObject<List<dynamic>>(await new StreamReader(req.Body).ReadToEndAsync()) ?? new List<dynamic>();
-        List<IEvent> peList = new List<IEvent>();
+        Guid userId = Guid.Empty; // You can replace this with actual user ID retrieval logic
+        Guid tenantId = Guid.Empty; // You can replace this with actual partition key retrieval logic
 
-        newEmployeeList.ForEach(e =>
-        {
-            //Need new id for aggregate root since its new
-            Guid newId = Guid.NewGuid();
-            e.id = newId;
-            
-            IEvent pe = new EventFactory().Create<Employee>(EmployeeCommand.BulkCreate, newId, e, Guid.Empty, Guid.Empty); //Empty guids should be replaced with user id and tenant id respectively
-            peList.Add(pe);
-        });
-
-        await _nostify.BulkPersistEventAsync(peList);
-
-        return newEmployeeList.Count;
+        return await DefaultCommandHandler.HandleBulkCreateAsync<Employee>(_nostify, EmployeeCommand.BulkCreate, req, userId, tenantId);
     }
 }
 
