@@ -62,22 +62,23 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
     public async static Task<List<ExternalDataEvent>> GetExternalDataEventsAsync(List<FullAccount> projectionsToInit, INostify nostify, HttpClient? httpClient = null, DateTime? pointInTime = null)
     {
         var grpcAddress = Environment.GetEnvironmentVariable("GrpcEventRequestAddress");
-        var grpcAuthToken = Environment.GetEnvironmentVariable("GrpcEventRequestAuthToken");
+        var authToken = Environment.GetEnvironmentVariable("GrpcEventRequestAuthToken");
         var employeeServiceName = Environment.GetEnvironmentVariable("GrpcEmployeeServiceName") ?? "Employee";
 
         var factory = new ExternalDataEventFactory<FullAccount>(
                 nostify,
                 projectionsToInit,
                 httpClient,
-                pointInTime,
-                authToken: string.IsNullOrWhiteSpace(grpcAuthToken) ? null : grpcAuthToken)
+                pointInTime)
             // Get events from same service for statusId (nullable selector example)
             .WithSameServiceIdSelectors(p => p.statusId);
 
         // Use gRPC gateway when configured; otherwise fall back to HTTP EventRequest endpoint.
         if (!string.IsNullOrWhiteSpace(grpcAddress))
         {
-            factory = factory.WithGrpcEventRequestor(grpcAddress, employeeServiceName, p => p.accountManagerId);
+            factory = string.IsNullOrWhiteSpace(authToken)
+                ? factory.WithGrpcEventRequestor(grpcAddress, employeeServiceName, p => p.accountManagerId)
+                : factory.WithGrpcEventRequestor(grpcAddress, serviceName: employeeServiceName, authToken: authToken, p => p.accountManagerId);
         }
         else if (httpClient != null)
         {
