@@ -22,9 +22,9 @@ Both services follow Domain-Driven Design (DDD) principles with:
 - Value objects and domain events
 - Azure Functions hosting
 
-## Version 4.8.x Update
+## Version 4.8.1 Update
 
-This example has been updated to the latest available 4.8.x release. The major updates include:
+This example has been updated to nostify 4.8.1. The major updates include:
 
 - **Updated to nostify 4.8.1**: All projects now reference nostify 4.8.1
 - **gRPC Event Request Gateway**: The `GrpcEventRequestServer` project provides a centralized gRPC event request service that routes by `service_name`
