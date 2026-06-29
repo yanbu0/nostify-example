@@ -61,13 +61,24 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
 
     public async static Task<List<ExternalDataEvent>> GetExternalDataEventsAsync(List<FullAccount> projectionsToInit, INostify nostify, HttpClient? httpClient = null, DateTime? pointInTime = null)
     {
-        // RECOMMENDED: Use ExternalDataEventFactory fluent API for cleaner, more maintainable code
-        var factory = new ExternalDataEventFactory<FullAccount>(nostify, projectionsToInit, httpClient, pointInTime)
+        var grpcAddress = Environment.GetEnvironmentVariable("GrpcEventRequestAddress");
+        var authToken = Environment.GetEnvironmentVariable("GrpcEventRequestAuthToken");
+        var employeeServiceName = Environment.GetEnvironmentVariable("GrpcEmployeeServiceName") ?? "Employee";
+
+        var factory = new ExternalDataEventFactory<FullAccount>(
+                nostify,
+                projectionsToInit,
+                httpClient,
+                pointInTime)
             // Get events from same service for statusId (nullable selector example)
             .WithSameServiceIdSelectors(p => p.statusId);
 
-        // Get events from external Employee service for accountManagerId (nullable selector example)
-        if (httpClient != null)
+        // Use gRPC gateway when configured; otherwise fall back to HTTP EventRequest endpoint.
+        if (!string.IsNullOrWhiteSpace(grpcAddress))
+        {
+            factory = factory.WithGrpcEventRequestor(grpcAddress, serviceName: employeeServiceName, authToken: authToken, p => p.accountManagerId);
+        }
+        else if (httpClient != null)
         {
             factory = factory.WithEventRequestor("http://localhost:7072/api/EventRequest", p => p.accountManagerId);
         }

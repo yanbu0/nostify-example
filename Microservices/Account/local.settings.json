@@ -15,7 +15,10 @@
     "AzureSignalRConnectionString":"Endpoint=http://localhost;Port=8888;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGH;Version=1.0;",
     "AutoCreateContainers":true,
     "DefaultContainerThroughput":-1,
-    "VerboseNostifyBuild":true
+    "VerboseNostifyBuild":true,
+    "GrpcEventRequestAddress":"http://localhost:5050",
+    "GrpcEventRequestAuthToken":"",
+    "GrpcEmployeeServiceName":"Employee"
   },
   "Host": {
     "CORS": "*",

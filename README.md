@@ -22,23 +22,24 @@ Both services follow Domain-Driven Design (DDD) principles with:
 - Value objects and domain events
 - Azure Functions hosting
 
-## Version 4.3.0 Update
+## Version 4.8.1 Update
 
-This example has been updated to version 4.3.0. The major updates include:
+This example has been updated to nostify 4.8.1. The major updates include:
 
-- **Upgraded to .NET 10.0**: All projects now target .NET 10 for improved performance and access to the latest framework features
-- **Updated Dependencies**: All package dependencies have been updated to be compatible with nostify 4.3.0
-- **ExternalDataEventFactory Fluent API**: The FullAccount projection now uses the fluent API pattern with the projection factory for gathering external data events, providing cleaner and more maintainable code
-- **Nullable Selector Examples**: The projection demonstrates nullable selector patterns for both same-service and external event requestors
-- **Modern Solution Format**: Updated to .slnx file format for better version control and readability
-- **Modern Patterns**: All code follows the latest recommended patterns from nostify 4.3.0
+- **Updated to nostify 4.8.1**: All projects now reference nostify 4.8.1
+- **gRPC Event Request Gateway**: The `GrpcEventRequestServer` project provides a centralized gRPC event request service that routes by `service_name`
+- **Projection gRPC Integration**: `FullAccount` now uses `ExternalDataEventFactory` gRPC requestors when a gateway address is configured
+- **Fallback Compatibility**: Projection initialization still supports HTTP `EventRequest` fallback when gRPC settings are not provided
+- **Current Standards Alignment**: Service projects now rely on nostify's built-in gRPC contracts instead of maintaining duplicate generated contracts
 
-For detailed information about nostify 4.3.0 features, including:
-- Sequential Number Generation
-- Enhanced Testability with IQueryExecutor
-- Default Command and Event Handlers
-- Event Hubs Support
-- Fluent API for Projections
-- And more
+### gRPC Projection Configuration
+
+Set the following values in `/Microservices/Account/local.settings.json` to enable gRPC event requests from projections:
+
+- `GrpcEventRequestAddress` - gRPC gateway endpoint (example: `http://localhost:5050`)
+- `GrpcEventRequestAuthToken` - optional API key/token for secured gateways
+- `GrpcEmployeeServiceName` - target service route name (default: `Employee`)
+
+When `GrpcEventRequestAddress` is provided, `FullAccount` uses `WithGrpcEventRequestor(...)`. If it is omitted, the projection falls back to HTTP `EventRequest`.
 
 Please refer to the [main nostify repository README](https://github.com/yanbu0/nostify).
