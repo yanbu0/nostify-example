@@ -76,9 +76,7 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
         // Use gRPC gateway when configured; otherwise fall back to HTTP EventRequest endpoint.
         if (!string.IsNullOrWhiteSpace(grpcAddress))
         {
-            factory = string.IsNullOrWhiteSpace(authToken)
-                ? factory.WithGrpcEventRequestor(grpcAddress, employeeServiceName, p => p.accountManagerId)
-                : factory.WithGrpcEventRequestor(grpcAddress, serviceName: employeeServiceName, authToken: authToken, p => p.accountManagerId);
+            factory = factory.WithGrpcEventRequestor(grpcAddress, serviceName: employeeServiceName, authToken: authToken, p => p.accountManagerId);
         }
         else if (httpClient != null)
         {
