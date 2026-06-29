@@ -70,15 +70,14 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
                 projectionsToInit,
                 httpClient,
                 pointInTime,
-                authToken: string.IsNullOrWhiteSpace(grpcAuthToken) ? null : grpcAuthToken,
-                grpcAddress: string.IsNullOrWhiteSpace(grpcAddress) ? null : grpcAddress)
+                authToken: string.IsNullOrWhiteSpace(grpcAuthToken) ? null : grpcAuthToken)
             // Get events from same service for statusId (nullable selector example)
             .WithSameServiceIdSelectors(p => p.statusId);
 
         // Use gRPC gateway when configured; otherwise fall back to HTTP EventRequest endpoint.
         if (!string.IsNullOrWhiteSpace(grpcAddress))
         {
-            factory = factory.WithGrpcEventRequestor(employeeServiceName, p => p.accountManagerId);
+            factory = factory.WithGrpcEventRequestor(grpcAddress, employeeServiceName, p => p.accountManagerId);
         }
         else if (httpClient != null)
         {
