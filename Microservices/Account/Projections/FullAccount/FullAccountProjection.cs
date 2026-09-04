@@ -24,7 +24,7 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
     public string statusName { get; set; }
     public string accountManagerName { get; set; }
 
-    [ApplyEvents("Create_Account", "Update_Account")]
+    [ApplyEvents("Create_Account", "BulkCreate_Account", "Update_Account")]
     protected void ApplyAccountCreateOrUpdate(IEvent eventToApply)
     {
         this.UpdateProperties<FullAccount>(eventToApply.payload);
