@@ -29,6 +29,29 @@ public class FullAccountApplyEventsTests
     }
 
     [Fact]
+    public void Apply_BulkCreate_Account_Event_Updates_Projection()
+    {
+        var projection = new FullAccount();
+        var statusId = Guid.NewGuid();
+        var managerId = Guid.NewGuid();
+        var bulkCreateEvent = new TestEvent(
+            AccountCommand.BulkCreate,
+            new
+            {
+                name = "Checking",
+                statusId,
+                accountManagerId = managerId
+            });
+
+        projection.Apply(bulkCreateEvent);
+
+        Assert.Equal("Checking", projection.name);
+        Assert.Equal(statusId, projection.statusId);
+        Assert.Equal(managerId, projection.accountManagerId);
+        Assert.False(projection.isDeleted);
+    }
+
+    [Fact]
     public void Apply_Delete_Account_Event_Sets_Soft_Delete_Flags()
     {
         var projection = new FullAccount();
