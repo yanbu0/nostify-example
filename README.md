@@ -22,11 +22,12 @@ Both services follow Domain-Driven Design (DDD) principles with:
 - Value objects and domain events
 - Azure Functions hosting
 
-## Version 4.8.1 Update
+## Version 5.0.0-beta3 Update
 
-This example has been updated to nostify 4.8.1. The major updates include:
+This example has been updated to nostify 5.0.0-beta3. The major updates include:
 
-- **Updated to nostify 4.8.1**: All projects now reference nostify 4.8.1
+- **Updated to nostify 5.0.0-beta3**: All projects now reference nostify 5.0.0-beta3
+- **ApplyEvents Attribute Dispatch**: Aggregate and projection `Apply` logic now uses `ApplyEvents` attribute handlers instead of manual command matching in `Apply(IEvent)` overrides
 - **gRPC Event Request Gateway**: The `GrpcEventRequestServer` project provides a centralized gRPC event request service that routes by `service_name`
 - **Projection gRPC Integration**: `FullAccount` now uses `ExternalDataEventFactory` gRPC requestors when a gateway address is configured
 - **Fallback Compatibility**: Projection initialization still supports HTTP `EventRequest` fallback when gRPC settings are not provided

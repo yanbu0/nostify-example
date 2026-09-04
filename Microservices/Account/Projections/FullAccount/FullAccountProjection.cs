@@ -24,39 +24,37 @@ public class FullAccount : AccountBaseClass, IProjection, IHasExternalData<FullA
     public string statusName { get; set; }
     public string accountManagerName { get; set; }
 
-    public override void Apply(IEvent eventToApply)
+    [ApplyEvents("Create_Account", "BulkCreate_Account", "Update_Account")]
+    protected void ApplyAccountCreateOrUpdate(IEvent eventToApply)
     {
-        // Handle Account events
-        if (eventToApply.command.name.Equals("Create_Account") 
-                || eventToApply.command.name.Equals("Update_Account"))
+        this.UpdateProperties<FullAccount>(eventToApply.payload);
+    }
+
+    [ApplyEvents("Delete_Account")]
+    protected void ApplyAccountDelete(IEvent eventToApply)
+    {
+        this.isDeleted = true;
+        this.ttl = 1;
+    }
+
+    [ApplyEvents("Create_AccountStatus", "Update_AccountStatus")]
+    protected void ApplyAccountStatusCreateOrUpdate(IEvent eventToApply)
+    {
+        var statusMapping = new Dictionary<string, string>
         {
-            this.UpdateProperties<FullAccount>(eventToApply.payload);
-        }
-        else if (eventToApply.command.name.Equals("Delete_Account"))
+            { "name", "statusName" }
+        };
+        this.UpdateProperties<FullAccount>(eventToApply.payload, statusMapping);
+    }
+
+    [ApplyEvents("Create_Employee", "Update_Employee")]
+    protected void ApplyEmployeeCreateOrUpdate(IEvent eventToApply)
+    {
+        var employeeMapping = new Dictionary<string, string>
         {
-            this.isDeleted = true;
-            this.ttl = 1;
-        }
-        // Handle AccountStatus events - map name to statusName
-        else if (eventToApply.command.name.Equals("Create_AccountStatus") || 
-                 eventToApply.command.name.Equals("Update_AccountStatus"))
-        {
-            var statusMapping = new Dictionary<string, string>
-            {
-                { "name", "statusName" }
-            };
-            this.UpdateProperties<FullAccount>(eventToApply.payload, statusMapping);
-        }
-        // Handle Employee events - map name to accountManagerName
-        else if (eventToApply.command.name.Equals("Create_Employee") || 
-                 eventToApply.command.name.Equals("Update_Employee"))
-        {
-            var employeeMapping = new Dictionary<string, string>
-            {
-                { "name", "accountManagerName" }
-            };
-            this.UpdateProperties<FullAccount>(eventToApply.payload, employeeMapping);
-        }
+            { "name", "accountManagerName" }
+        };
+        this.UpdateProperties<FullAccount>(eventToApply.payload, employeeMapping);
     }
 
     public async static Task<List<ExternalDataEvent>> GetExternalDataEventsAsync(List<FullAccount> projectionsToInit, INostify nostify, HttpClient? httpClient = null, DateTime? pointInTime = null)

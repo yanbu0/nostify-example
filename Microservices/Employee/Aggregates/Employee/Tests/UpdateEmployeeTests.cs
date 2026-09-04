@@ -18,6 +18,7 @@ public class Update_Employee_Command_Should
     private Mock<HttpClient> _httpClientMock;
     private Mock<ILogger<UpdateEmployee>> _loggerMock;
     private Mock<FunctionContext> _functionContextMock;
+    private Mock<BindingContext> _bindingContextMock;
 
     public Update_Employee_Command_Should()
     {
@@ -26,6 +27,9 @@ public class Update_Employee_Command_Should
         _loggerMock = new Mock<ILogger<UpdateEmployee>>();
         _func = new UpdateEmployee(_httpClientMock.Object, _nostifyMock.Object, _loggerMock.Object);
         _functionContextMock = new Mock<FunctionContext>();
+        _bindingContextMock = new Mock<BindingContext>();
+        _bindingContextMock.Setup(x => x.BindingData).Returns(new Dictionary<string, object>());
+        _functionContextMock.Setup(x => x.BindingContext).Returns(_bindingContextMock.Object);
     }
 
     [Fact]
