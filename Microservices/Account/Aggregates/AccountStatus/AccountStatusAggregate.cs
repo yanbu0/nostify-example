@@ -13,18 +13,17 @@ public class AccountStatus : AccountStatusBaseClass, IAggregate
     public static string aggregateType => "AccountStatus";
     public static string currentStateContainerName => $"{aggregateType}CurrentState";
 
-    public override void Apply(IEvent eventToApply)
+    [ApplyEvents("Create_AccountStatus", "BulkCreate_AccountStatus", "Update_AccountStatus")]
+    protected void ApplyCreateOrUpdate(IEvent eventToApply)
     {
-        if (eventToApply.command == AccountStatusCommand.BulkCreate || eventToApply.command == AccountStatusCommand.Create || eventToApply.command == AccountStatusCommand.Update)
-        {
-            this.UpdateProperties<AccountStatus>(eventToApply.payload);
-        }
-        else if (eventToApply.command == AccountStatusCommand.Delete)
-        {
-            this.isDeleted = true;
-        }
+        this.UpdateProperties<AccountStatus>(eventToApply.payload);
+    }
+
+    [ApplyEvents("Delete_AccountStatus")]
+    protected void ApplyDelete(IEvent eventToApply)
+    {
+        this.isDeleted = true;
     }
 }
-
 
 
