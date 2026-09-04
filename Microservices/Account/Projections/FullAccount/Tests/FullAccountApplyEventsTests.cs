@@ -51,7 +51,7 @@ public class FullAccountApplyEventsTests
                 name = "Pending Review"
             });
         var employeeEvent = new TestEvent(
-            new NostifyCommand("Update_Employee"),
+            Update_Employee_TestEventType.Instance,
             new
             {
                 name = "Jane Doe"
@@ -72,6 +72,15 @@ public class FullAccountApplyEventsTests
             aggregateRootId = Guid.NewGuid();
             this.eventType = eventType;
             this.payload = payload;
+        }
+    }
+
+    private sealed class Update_Employee_TestEventType : EventType
+    {
+        public static readonly Update_Employee_TestEventType Instance = new();
+
+        private Update_Employee_TestEventType() : base("Update_Employee")
+        {
         }
     }
 }
