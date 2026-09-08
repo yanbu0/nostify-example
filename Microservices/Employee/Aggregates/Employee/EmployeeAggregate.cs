@@ -14,19 +14,18 @@ public class Employee : EmployeeBaseClass, IAggregate
     public static string aggregateType => "Employee";
     public static string currentStateContainerName => $"{aggregateType}CurrentState";
 
-    public override void Apply(IEvent eventToApply)
+    [ApplyEvents("Create_Employee", "BulkCreate_Employee", "Update_Employee")]
+    protected void ApplyCreateOrUpdate(IEvent eventToApply)
     {
-        if (eventToApply.command == EmployeeCommand.Create || eventToApply.command == EmployeeCommand.BulkCreate || eventToApply.command == EmployeeCommand.Update)
-        {
-            //Note: this uses reflection, may be desirable to optimize
-            this.UpdateProperties<Employee>(eventToApply.payload);
-        }
-        else if (eventToApply.command == EmployeeCommand.Delete)
-        {
-            this.isDeleted = true;
-        }
+        //Note: this uses reflection, may be desirable to optimize
+        this.UpdateProperties<Employee>(eventToApply.payload);
+    }
+
+    [ApplyEvents("Delete_Employee")]
+    protected void ApplyDelete(IEvent eventToApply)
+    {
+        this.isDeleted = true;
     }
 }
-
 
 
